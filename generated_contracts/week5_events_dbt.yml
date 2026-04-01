@@ -2,6 +2,39 @@ version: 2
 models:
 - name: week5_events
   columns:
+  - name: event_id
+    tests:
+    - dbt_expectations.expect_column_values_to_match_regex:
+        regex: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+  - name: aggregate_id
+    tests:
+    - dbt_expectations.expect_column_values_to_match_regex:
+        regex: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+  - name: event_type
+    tests:
+    - dbt_expectations.expect_column_values_to_match_regex:
+        regex: ^[A-Z][A-Za-z0-9]+$
+    - accepted_values:
+        values:
+        - ContractValidated
+        - DocumentProcessed
+        - ExtractionStored
+  - name: aggregate_type
+    tests:
+    - dbt_expectations.expect_column_values_to_match_regex:
+        regex: ^[A-Z][A-Za-z0-9]+$
+  - name: sequence_number
+    tests:
+    - dbt_expectations.expect_column_values_to_be_between:
+        min_value: 1
+  - name: occurred_at
+    tests:
+    - dbt_expectations.expect_column_values_to_match_regex:
+        regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
+  - name: recorded_at
+    tests:
+    - dbt_expectations.expect_column_values_to_match_regex:
+        regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
   - name: schema_version
     tests:
     - accepted_values:
@@ -12,3 +45,10 @@ models:
     - accepted_values:
         values:
         - week3-document-refinery
+  tests:
+  - dbt_utils.unique_combination_of_columns:
+      combination_of_columns:
+      - aggregate_id
+      - sequence_number
+  - dbt_utils.expression_is_true:
+      expression: recorded_at >= occurred_at

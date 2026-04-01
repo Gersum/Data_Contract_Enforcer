@@ -195,15 +195,130 @@ def contract_aliases(contract_id: str, dataset_type: str) -> list[str]:
     return sorted(aliases)
 
 
+def add_column_test(columns: list[dict], field: str, test: object) -> None:
+    column = next((candidate for candidate in columns if candidate["name"] == field), None)
+    if column is None:
+        column = {"name": field, "tests": []}
+        columns.append(column)
+    if test not in column["tests"]:
+        column["tests"].append(test)
+
+
+def load_registry_values(registry_path: str) -> list[str]:
+    path = ROOT / registry_path
+    if not path.exists():
+        return []
+    with open(path, "r", encoding="utf-8") as handle:
+        payload = json.load(handle)
+    return sorted(payload.keys())
+
+
+def dbt_tests_for_clause(clause: dict) -> tuple[list[tuple[str, object]], list[object]]:
+    column_tests: list[tuple[str, object]] = []
+    model_tests: list[object] = []
+
+    if clause["check_type"] == "required":
+        column_tests.append((clause["field"], "not_null"))
+    elif clause["check_type"] == "uuid":
+        column_tests.append(
+            (
+                clause["field"],
+                {
+                    "dbt_expectations.expect_column_values_to_match_regex": {
+                        "regex": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                    }
+                },
+            )
+        )
+    elif clause["check_type"] == "datetime":
+        column_tests.append(
+            (
+                clause["field"],
+                {
+                    "dbt_expectations.expect_column_values_to_match_regex": {
+                        "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+                    }
+                },
+            )
+        )
+    elif clause["check_type"] == "min":
+        column_tests.append(
+            (
+                clause["field"],
+                {
+                    "dbt_expectations.expect_column_values_to_be_between": {
+                        "min_value": clause["minimum"]
+                    }
+                },
+            )
+        )
+    elif clause["check_type"] == "range":
+        column_tests.append(
+            (
+                clause["field"],
+                {
+                    "dbt_expectations.expect_column_values_to_be_between": {
+                        "min_value": clause["minimum"],
+                        "max_value": clause["maximum"],
+                    }
+                },
+            )
+        )
+    elif clause["check_type"] == "enum":
+        column_tests.append((clause["field"], {"accepted_values": {"values": clause["allowed_values"]}}))
+    elif clause["check_type"] == "boolean_truth":
+        column_tests.append((clause["field"], {"accepted_values": {"values": [True]}}))
+    elif clause["check_type"] == "pattern":
+        column_tests.append(
+            (
+                clause["field"],
+                {
+                    "dbt_expectations.expect_column_values_to_match_regex": {
+                        "regex": clause["pattern"]
+                    }
+                },
+            )
+        )
+    elif clause["check_type"] == "registry_membership":
+        allowed_values = load_registry_values(clause["registry_path"])
+        if allowed_values:
+            column_tests.append((clause["field"], {"accepted_values": {"values": allowed_values}}))
+    elif clause["check_type"] == "temporal_order":
+        model_tests.append(
+            {
+                "dbt_utils.expression_is_true": {
+                    "expression": f"{clause['field']} >= {clause['reference_field']}"
+                }
+            }
+        )
+    elif clause["check_type"] == "monotonic_per_aggregate":
+        model_tests.append(
+            {
+                "dbt_utils.unique_combination_of_columns": {
+                    "combination_of_columns": ["aggregate_id", "sequence_number"]
+                }
+            }
+        )
+
+    return column_tests, model_tests
+
+
 def write_dbt_counterpart(contract: dict, output_dir: Path) -> Path:
     model_name = contract_filename(contract["contract_id"])
-    tests = []
+    columns: list[dict] = []
+    model_tests: list[object] = []
     for clause in contract["clauses"]:
-        if clause["check_type"] == "required":
-            tests.append({"name": clause["field"], "tests": ["not_null"]})
-        elif clause["check_type"] == "enum":
-            tests.append({"name": clause["field"], "tests": [{"accepted_values": {"values": clause["allowed_values"]}}]})
-    payload = {"version": 2, "models": [{"name": model_name, "columns": tests}]}
+        clause_column_tests, clause_model_tests = dbt_tests_for_clause(clause)
+        for field, test in clause_column_tests:
+            add_column_test(columns, field, test)
+        for model_test in clause_model_tests:
+            if model_test not in model_tests:
+                model_tests.append(model_test)
+
+    model_payload = {"name": model_name, "columns": columns}
+    if model_tests:
+        model_payload["tests"] = model_tests
+    payload = {"version": 2, "models": [model_payload]}
     output_path = output_dir / f"{model_name}_dbt.yml"
     with open(output_path, "w", encoding="utf-8") as handle:
         yaml.safe_dump(payload, handle, sort_keys=False)
@@ -245,17 +360,13 @@ def main() -> None:
             yaml.safe_dump(contract, handle, sort_keys=False, allow_unicode=False)
         yaml_paths.append(yaml_path)
 
-    write_dbt_counterpart(contract, output_dir)
+    dbt_path = write_dbt_counterpart(contract, output_dir)
     alias_map = {"week3": "week3_extractions_dbt.yml", "week5": "week5_events_dbt.yml"}
     expected_dbt_path = output_dir / alias_map[dataset_type]
-    if not expected_dbt_path.exists():
-        with open(expected_dbt_path, "w", encoding="utf-8") as handle:
-            yaml.safe_dump(
-                yaml.safe_load(open(output_dir / f"{contract_filename(contract_id)}_dbt.yml", "r", encoding="utf-8")),
-                handle,
-                sort_keys=False,
-                allow_unicode=False,
-            )
+    with open(dbt_path, "r", encoding="utf-8") as handle:
+        dbt_payload = yaml.safe_load(handle)
+    with open(expected_dbt_path, "w", encoding="utf-8") as handle:
+        yaml.safe_dump(dbt_payload, handle, sort_keys=False, allow_unicode=False)
 
     snapshot = {
         "contract_id": contract["contract_id"],
