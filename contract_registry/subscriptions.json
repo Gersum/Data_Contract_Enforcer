@@ -1,0 +1,35 @@
+{
+  "contracts": {
+    "week3-document-refinery-extractions": {
+      "published_version": "1.2.0",
+      "subscribers": [
+        {
+          "subscriber_id": "consumer-a-internal",
+          "organization": "same-company",
+          "contract_version": "1.2.0",
+          "tier": "Tier 2",
+          "notification_target": "data-platform@internal.example"
+        },
+        {
+          "subscriber_id": "consumer-b-external",
+          "organization": "external-company",
+          "contract_version": "1.2.0",
+          "tier": "Tier 3",
+          "notification_target": "partner-api@external.example"
+        }
+      ]
+    },
+    "week5-event-sourcing-events": {
+      "published_version": "1.0.0",
+      "subscribers": [
+        {
+          "subscriber_id": "week7-reporting-service",
+          "organization": "same-company",
+          "contract_version": "1.0.0",
+          "tier": "Tier 2",
+          "notification_target": "reporting@internal.example"
+        }
+      ]
+    }
+  }
+}

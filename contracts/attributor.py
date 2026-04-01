@@ -43,6 +43,17 @@ def build_blast_radius(lineage_snapshot: dict) -> list[str]:
     return sorted(node for node in nodes if node)
 
 
+def load_registry_subscribers(registry_path: str | None, contract_id: str) -> list[dict]:
+    if not registry_path:
+        return []
+    path = ROOT / registry_path if not Path(registry_path).is_absolute() else Path(registry_path)
+    if not path.exists():
+        return []
+    payload = json.load(open(path, "r", encoding="utf-8"))
+    subscribers = payload.get("contracts", {}).get(contract_id, {}).get("subscribers", [])
+    return subscribers
+
+
 def pick_failed_results(validation_report: dict) -> list[dict]:
     return [result for result in validation_report.get("results", []) if result.get("status") in {"FAIL", "ERROR", "WARN"}]
 
@@ -50,20 +61,42 @@ def pick_failed_results(validation_report: dict) -> list[dict]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Attribute contract violations to likely upstream sources.")
     parser.add_argument("--violation", required=True, help="Validation report JSON")
-    parser.add_argument("--lineage", required=True)
+    parser.add_argument("--lineage")
     parser.add_argument("--contract", required=True)
+    parser.add_argument("--registry", help="Optional contract registry/subscription file for cross-team or cross-company blast radius.")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
     validation_report = json.load(open(args.violation, "r", encoding="utf-8"))
     contract = yaml.safe_load(open(args.contract, "r", encoding="utf-8"))
-    lineage_snapshot = read_jsonl(args.lineage)[-1]
     failed = pick_failed_results(validation_report)
     git_candidate = latest_git_candidate()
-    blast_radius = build_blast_radius(lineage_snapshot)
+    lineage_snapshot = read_jsonl(args.lineage)[-1] if args.lineage and Path(args.lineage).exists() else None
+    registry_subscribers = load_registry_subscribers(args.registry, contract["contract_id"])
+
+    if lineage_snapshot:
+        blast_radius = build_blast_radius(lineage_snapshot)
+        blast_radius_mode = "lineage_graph"
+    else:
+        blast_radius = [subscriber["subscriber_id"] for subscriber in registry_subscribers]
+        blast_radius_mode = "registry_subscriptions"
 
     rows = []
     for rank, result in enumerate(failed, start=1):
+        if blast_radius_mode == "lineage_graph":
+            impact_summary = {
+                "mode": blast_radius_mode,
+                "affected_nodes": blast_radius,
+                "affected_count": len(blast_radius),
+            }
+        else:
+            impact_summary = {
+                "mode": blast_radius_mode,
+                "subscriber_count": len(registry_subscribers),
+                "active_versions": sorted({subscriber.get("contract_version", "unknown") for subscriber in registry_subscribers}),
+                "subscribers": registry_subscribers,
+                "note": "Cross-boundary blast radius stops at subscriber notification. Each consumer computes its own internal impact.",
+            }
         row = {
             "violation_id": f"viol-{rank:03d}",
             "recorded_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
@@ -87,7 +120,7 @@ def main() -> None:
                 },
             ],
             "git_blame": git_candidate,
-            "blast_radius": blast_radius,
+            "blast_radius": impact_summary,
         }
         rows.append(row)
 

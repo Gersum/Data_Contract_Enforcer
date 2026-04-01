@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-04-01T10:13:52Z",
+  "contract_id": "week3-document-refinery-extractions",
+  "snapshot_count": 3,
+  "previous_snapshot": "2026-03-31T22:31:53Z",
+  "current_snapshot": "2026-03-31T22:32:04Z",
+  "compatibility_verdict": "BREAKING",
+  "changes": [
+    {
+      "field": "extracted_facts.confidence",
+      "change_type": "SEMANTIC_RANGE_SHIFT",
+      "compatibility": "BREAKING",
+      "impact": "Confidence max moved from 0.94 to 60.0, indicating a 0.0-1.0 to 0-100 scale break."
+    }
+  ],
+  "migration_impact_report": [
+    "Update week3 consumers to expect confidence values as floats in the 0.0-1.0 range.",
+    "Backfill bad records before re-running downstream lineage and event publication jobs.",
+    "Add pre-merge validation for extraction payloads to catch enum and entity-ref drift earlier."
+  ],
+  "rollback_plan": [
+    "Restore the last known-good extractor release.",
+    "Re-run contract validation on the clean extraction dataset.",
+    "Replay only validated events into the week5 event store."
+  ]
+}

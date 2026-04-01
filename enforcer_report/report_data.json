@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-04-01T10:13:59Z",
+  "period": "2026-03-25 to 2026-04-01",
+  "data_health_score": 50,
+  "health_narrative": "Score of 50/100. 2 critical issues require immediate attention.",
+  "top_violations": [
+    "The extracted_facts.confidence field failed a range check. Expected {'minimum': 0.0, 'maximum': 1.0} but found {'minimum': 0.55, 'maximum': 60.0}. This affects 10 records.",
+    "The extracted_facts.entity_refs_valid field failed a boolean_truth check. Expected contract expectation but found observed value. This affects 1 records.",
+    "The entities.type field failed a enum check. Expected contract expectation but found observed value. This affects 1 records."
+  ],
+  "total_violations_by_severity": {
+    "CRITICAL": 2,
+    "HIGH": 1,
+    "MEDIUM": 0,
+    "LOW": 0
+  },
+  "violation_count": 3,
+  "schema_changes_detected": [
+    {
+      "field": "extracted_facts.confidence",
+      "change_type": "SEMANTIC_RANGE_SHIFT",
+      "compatibility": "BREAKING",
+      "impact": "Confidence max moved from 0.94 to 60.0, indicating a 0.0-1.0 to 0-100 scale break."
+    }
+  ],
+  "ai_system_risk_assessment": [
+    {
+      "name": "embedding_drift",
+      "status": "PASS",
+      "drift_score": 0.0129,
+      "baseline_size": 60,
+      "current_size": 60
+    },
+    {
+      "name": "prompt_input_schema",
+      "status": "PASS",
+      "records_failing": 0,
+      "sample_values": []
+    },
+    {
+      "name": "llm_output_schema",
+      "status": "PASS",
+      "violation_rate": 0.0,
+      "records_failing": 0,
+      "sample_values": []
+    }
+  ],
+  "recommended_actions": [
+    "Update src/extractor.py and upstream generation logic so extracted_facts.confidence remains a float in the 0.0-1.0 range.",
+    "Reject week3 records with dangling entity_refs or invalid entity types before they reach lineage and event consumers.",
+    "Add contract generation and runner commands to CI so week3 and week5 interfaces are validated on every change."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-04-01T10:13:53Z",
+  "mode": "all",
+  "status": "PASS",
+  "results": [
+    {
+      "name": "embedding_drift",
+      "status": "PASS",
+      "drift_score": 0.0129,
+      "baseline_size": 60,
+      "current_size": 60
+    },
+    {
+      "name": "prompt_input_schema",
+      "status": "PASS",
+      "records_failing": 0,
+      "sample_values": []
+    },
+    {
+      "name": "llm_output_schema",
+      "status": "PASS",
+      "violation_rate": 0.0,
+      "records_failing": 0,
+      "sample_values": []
+    }
+  ]
+}
