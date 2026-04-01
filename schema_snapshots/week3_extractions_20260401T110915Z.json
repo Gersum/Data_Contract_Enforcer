@@ -1,0 +1,347 @@
+{
+  "contract_id": "week3-extractions",
+  "generated_at": "2026-04-01T11:09:15Z",
+  "profile_hash": "a0d8cfff098e71f0e68876db8dc4f8248a801e7fc6cd495e8f51d1cc6f592d19",
+  "column_profiles": {
+    "doc_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        "e673ce49-e23f-4a22-8f85-16a059f7161c",
+        "e673ce49-e23f-4a22-8f85-16a059f7161c",
+        "e673ce49-e23f-4a22-8f85-16a059f7161c",
+        "a1c30d46-6979-4694-a877-820f2039e647",
+        "a1c30d46-6979-4694-a877-820f2039e647"
+      ]
+    },
+    "source_path": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        "https://example.com/documents/0",
+        "https://example.com/documents/0",
+        "https://example.com/documents/0",
+        "https://example.com/documents/1",
+        "https://example.com/documents/1"
+      ]
+    },
+    "source_hash": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        "c212b3ffca5edfa74e06c2840b8186018ed11c3ff7adc5b3810527fe4feffa31",
+        "c212b3ffca5edfa74e06c2840b8186018ed11c3ff7adc5b3810527fe4feffa31",
+        "c212b3ffca5edfa74e06c2840b8186018ed11c3ff7adc5b3810527fe4feffa31",
+        "ffa6a744d78d28386438b4a8e8ee32f56718633735057b1b5ddfb5d224d45d98",
+        "ffa6a744d78d28386438b4a8e8ee32f56718633735057b1b5ddfb5d224d45d98"
+      ]
+    },
+    "extraction_model": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        "claude-3-5-sonnet-20241022",
+        "claude-3-5-sonnet-20241022",
+        "claude-3-5-sonnet-20241022",
+        "claude-3-5-sonnet-20241022",
+        "claude-3-5-sonnet-20241022"
+      ]
+    },
+    "processing_time_ms": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        1100,
+        1100,
+        1100,
+        1113,
+        1113
+      ],
+      "stats": {
+        "min": 1100.0,
+        "max": 1867.0,
+        "mean": 1483.5,
+        "p25": 1291.75,
+        "p50": 1483.5,
+        "p75": 1675.25,
+        "p95": 1828.6499999999999,
+        "p99": 1867.0,
+        "stddev": 225.76332344357996
+      }
+    },
+    "token_count.input": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        3800,
+        3800,
+        3800,
+        3811,
+        3811
+      ],
+      "stats": {
+        "min": 3800.0,
+        "max": 4449.0,
+        "mean": 4124.5,
+        "p25": 3962.25,
+        "p50": 4124.5,
+        "p75": 4286.75,
+        "p95": 4416.55,
+        "p99": 4449.0,
+        "stddev": 191.03050445225995
+      }
+    },
+    "token_count.output": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        760,
+        760,
+        760,
+        763,
+        763
+      ],
+      "stats": {
+        "min": 760.0,
+        "max": 937.0,
+        "mean": 848.5,
+        "p25": 804.25,
+        "p50": 848.5,
+        "p75": 892.75,
+        "p95": 928.15,
+        "p99": 937.0,
+        "stddev": 52.099228486979996
+      }
+    },
+    "extracted_at": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        "2025-01-15T08:00:00Z",
+        "2025-01-15T08:00:00Z",
+        "2025-01-15T08:00:00Z",
+        "2025-01-15T08:07:00Z",
+        "2025-01-15T08:07:00Z"
+      ]
+    },
+    "entity_count": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "stats": {
+        "min": 3.0,
+        "max": 3.0,
+        "mean": 3.0,
+        "p25": 3.0,
+        "p50": 3.0,
+        "p75": 3.0,
+        "p95": 3.0,
+        "p99": 3.0,
+        "stddev": 0.0
+      }
+    },
+    "fact_count": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "stats": {
+        "min": 2.0,
+        "max": 2.0,
+        "mean": 2.0,
+        "p25": 2.0,
+        "p50": 2.0,
+        "p75": 2.0,
+        "p95": 2.0,
+        "p99": 2.0,
+        "stddev": 0.0
+      }
+    },
+    "entities.entity_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 180,
+      "sample_values": [
+        "25a6c208-d419-48c5-a22a-f335b3654477",
+        "c6883e4d-c13d-447b-8a47-c9a7668db858",
+        "bef894fc-8690-47dd-98b2-d5e80d94b584",
+        "bd9b95c0-1978-48ad-80dd-102cf3912e25",
+        "c3e02656-5cc7-4ead-a41e-76b6a081b383"
+      ]
+    },
+    "entities.type": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 6,
+      "sample_values": [
+        "PERSON",
+        "ORG",
+        "LOCATION",
+        "ORG",
+        "LOCATION"
+      ]
+    },
+    "entities.name": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 180,
+      "sample_values": [
+        "Entity 0-0",
+        "Entity 0-1",
+        "Entity 0-2",
+        "Entity 1-0",
+        "Entity 1-1"
+      ]
+    },
+    "entities.canonical_value": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 180,
+      "sample_values": [
+        "entity-0-0",
+        "entity-0-1",
+        "entity-0-2",
+        "entity-1-0",
+        "entity-1-1"
+      ]
+    },
+    "extracted_facts.fact_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 120,
+      "sample_values": [
+        "eb2645f1-94dd-4ee5-a2b7-fd42bf25709f",
+        "d7063f5b-fd4c-49fe-97f5-b0b6f3374ba3",
+        "65101afe-b57c-44c2-a925-9a58863b3c0a",
+        "9549e6de-e2df-4b6b-9a62-d8228a2be381",
+        "c69f5c71-dcda-4f41-b934-77172cfc13a8"
+      ]
+    },
+    "extracted_facts.confidence": {
+      "dtype": "number",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 40,
+      "sample_values": [
+        0.55,
+        0.56,
+        0.56,
+        0.57,
+        0.57
+      ],
+      "stats": {
+        "min": 0.55,
+        "max": 0.94,
+        "mean": 0.7133333333333333,
+        "p25": 0.62,
+        "p50": 0.7,
+        "p75": 0.7925,
+        "p95": 0.9105,
+        "p99": 0.9380999999999999,
+        "stddev": 0.11002928054400252
+      }
+    },
+    "extracted_facts.page_ref": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 2,
+      "sample_values": [
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "stats": {
+        "min": 1.0,
+        "max": 2.0,
+        "mean": 1.5,
+        "p25": 1.0,
+        "p50": 1.5,
+        "p75": 2.0,
+        "p95": 2.0,
+        "p99": 2.0,
+        "stddev": 0.5020964452534338
+      }
+    },
+    "extracted_facts.text": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 120,
+      "sample_values": [
+        "Document 0 fact 0",
+        "Document 0 fact 1",
+        "Document 1 fact 0",
+        "Document 1 fact 1",
+        "Document 2 fact 0"
+      ]
+    },
+    "extracted_facts.source_excerpt": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 120,
+      "sample_values": [
+        "Document 0 excerpt 0 describing an obligation.",
+        "Document 0 excerpt 1 describing an obligation.",
+        "Document 1 excerpt 0 describing an obligation.",
+        "Document 1 excerpt 1 describing an obligation.",
+        "Document 2 excerpt 0 describing an obligation."
+      ]
+    },
+    "extracted_facts.entity_ref_count": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "stats": {
+        "min": 2.0,
+        "max": 2.0,
+        "mean": 2.0,
+        "p25": 2.0,
+        "p50": 2.0,
+        "p75": 2.0,
+        "p95": 2.0,
+        "p99": 2.0,
+        "stddev": 0.0
+      }
+    },
+    "extracted_facts.entity_refs_valid": {
+      "dtype": "boolean",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    }
+  }
+}

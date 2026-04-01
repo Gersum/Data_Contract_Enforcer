@@ -1,0 +1,205 @@
+{
+  "contract_id": "week5-events",
+  "generated_at": "2026-04-01T12:02:27Z",
+  "profile_hash": "2bdb4f3fc6a8f3723a3f908f5e27d151df0b33f2c29f24b1be0c3039fd451b9f",
+  "column_profiles": {
+    "event_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        "0c9328fe-131e-4893-be90-fa6cd6c81bb4",
+        "bf33c1cc-05a3-4939-9382-6e3a9d15ae28",
+        "0c15aa79-76bf-4a68-a0a9-bd65d65d21b0",
+        "0754e2c1-9345-41d8-84a0-86740b142f8a",
+        "b8196c4c-ca93-4b1b-9f85-d879301ecde4"
+      ]
+    },
+    "event_type": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 3,
+      "sample_values": [
+        "ExtractionStored",
+        "ContractValidated",
+        "DocumentProcessed",
+        "ExtractionStored",
+        "ContractValidated"
+      ]
+    },
+    "aggregate_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 10,
+      "sample_values": [
+        "23d13372-0c5d-4ba2-b41c-45fae1c35e98",
+        "23d13372-0c5d-4ba2-b41c-45fae1c35e98",
+        "23d13372-0c5d-4ba2-b41c-45fae1c35e98",
+        "23d13372-0c5d-4ba2-b41c-45fae1c35e98",
+        "23d13372-0c5d-4ba2-b41c-45fae1c35e98"
+      ]
+    },
+    "aggregate_type": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        "Document",
+        "Document",
+        "Document",
+        "Document",
+        "Document"
+      ]
+    },
+    "sequence_number": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 6,
+      "sample_values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "stats": {
+        "min": 1.0,
+        "max": 6.0,
+        "mean": 3.5,
+        "p25": 2.0,
+        "p50": 3.5,
+        "p75": 5.0,
+        "p95": 6.0,
+        "p99": 6.0,
+        "stddev": 1.72223740956793
+      }
+    },
+    "schema_version": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        "1.0",
+        "1.0",
+        "1.0",
+        "1.0",
+        "1.0"
+      ]
+    },
+    "occurred_at": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        "2025-01-15T08:01:00Z",
+        "2025-01-15T08:02:00Z",
+        "2025-01-15T08:03:00Z",
+        "2025-01-15T08:04:00Z",
+        "2025-01-15T08:05:00Z"
+      ]
+    },
+    "recorded_at": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        "2025-01-15T08:02:00Z",
+        "2025-01-15T08:03:00Z",
+        "2025-01-15T08:04:00Z",
+        "2025-01-15T08:05:00Z",
+        "2025-01-15T08:06:00Z"
+      ]
+    },
+    "metadata.correlation_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 60,
+      "sample_values": [
+        "879a0e62-5a13-4d71-8906-2eac914a868b",
+        "54f196c0-3435-461a-a3d5-96a6dcc90bc5",
+        "c1c5de7f-1c1e-4504-b44e-d3a6ef63892b",
+        "caaa5e4d-8eff-4681-9409-e096f35f0b9d",
+        "d3209488-d748-4f7d-bd02-a001700bc57c"
+      ]
+    },
+    "metadata.causation_id": {
+      "dtype": "string",
+      "null_fraction": 0.1667,
+      "cardinality_estimate": 50,
+      "sample_values": [
+        "1b11efda-db6e-4ece-a43f-1da543039fb1",
+        "a0c8e056-6e69-499f-96c3-c86787dda1f9",
+        "d1720c45-294b-4289-a486-c41c3262b016",
+        "5dbed714-a69f-4b29-9be0-61823e180d14",
+        "87622f6d-1230-4281-897a-667cf11345bc"
+      ]
+    },
+    "metadata.source_service": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        "week3-document-refinery",
+        "week3-document-refinery",
+        "week3-document-refinery",
+        "week3-document-refinery",
+        "week3-document-refinery"
+      ]
+    },
+    "payload_keys": {
+      "dtype": "array",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        [
+          "document_id",
+          "fact_count",
+          "status"
+        ],
+        [
+          "document_id",
+          "fact_count",
+          "status"
+        ],
+        [
+          "document_id",
+          "fact_count",
+          "status"
+        ],
+        [
+          "document_id",
+          "fact_count",
+          "status"
+        ],
+        [
+          "document_id",
+          "fact_count",
+          "status"
+        ]
+      ]
+    },
+    "payload_size": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "stats": {
+        "min": 3.0,
+        "max": 3.0,
+        "mean": 3.0,
+        "p25": 3.0,
+        "p50": 3.0,
+        "p75": 3.0,
+        "p95": 3.0,
+        "p99": 3.0,
+        "stddev": 0.0
+      }
+    }
+  }
+}

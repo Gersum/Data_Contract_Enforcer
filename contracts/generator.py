@@ -43,6 +43,14 @@ def infer_dataset_type(source_path: str) -> str:
     raise ValueError("Could not infer dataset type from source path. Use week3/week5 naming.")
 
 
+def default_contract_id(dataset_type: str) -> str:
+    mapping = {
+        "week3": "week3-extractions",
+        "week5": "week5-events",
+    }
+    return mapping[dataset_type]
+
+
 def base_contract(contract_id: str, source_path: str, dataset_type: str) -> dict:
     return {
         "contract_id": contract_id,
@@ -178,6 +186,15 @@ def contract_filename(contract_id: str) -> str:
     return contract_id.replace("-", "_")
 
 
+def contract_aliases(contract_id: str, dataset_type: str) -> list[str]:
+    aliases = {contract_filename(contract_id)}
+    if dataset_type == "week3":
+        aliases.add("week3_extractions")
+    elif dataset_type == "week5":
+        aliases.add("week5_events")
+    return sorted(aliases)
+
+
 def write_dbt_counterpart(contract: dict, output_dir: Path) -> Path:
     model_name = contract_filename(contract["contract_id"])
     tests = []
@@ -196,18 +213,19 @@ def write_dbt_counterpart(contract: dict, output_dir: Path) -> Path:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate a YAML data contract from JSONL records.")
     parser.add_argument("--source", required=True)
-    parser.add_argument("--contract-id", required=True)
+    parser.add_argument("--contract-id")
     parser.add_argument("--lineage")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
     dataset_type = infer_dataset_type(args.source)
+    contract_id = args.contract_id or default_contract_id(dataset_type)
     records = read_jsonl(args.source)
     if not records:
         raise SystemExit("No records found in source JSONL.")
 
     records, profiles = profile_records(records, dataset_type)
-    contract = base_contract(args.contract_id, args.source, dataset_type)
+    contract = base_contract(contract_id, args.source, dataset_type)
     contract["profile_hash"] = sha256_text(json.dumps(profiles, sort_keys=True, default=str))
     contract["column_profiles"] = profiles
 
@@ -220,11 +238,24 @@ def main() -> None:
 
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
-    yaml_path = output_dir / f"{contract_filename(args.contract_id)}.yaml"
-    with open(yaml_path, "w", encoding="utf-8") as handle:
-        yaml.safe_dump(contract, handle, sort_keys=False, allow_unicode=False)
+    yaml_paths = []
+    for alias in contract_aliases(contract_id, dataset_type):
+        yaml_path = output_dir / f"{alias}.yaml"
+        with open(yaml_path, "w", encoding="utf-8") as handle:
+            yaml.safe_dump(contract, handle, sort_keys=False, allow_unicode=False)
+        yaml_paths.append(yaml_path)
 
     write_dbt_counterpart(contract, output_dir)
+    alias_map = {"week3": "week3_extractions_dbt.yml", "week5": "week5_events_dbt.yml"}
+    expected_dbt_path = output_dir / alias_map[dataset_type]
+    if not expected_dbt_path.exists():
+        with open(expected_dbt_path, "w", encoding="utf-8") as handle:
+            yaml.safe_dump(
+                yaml.safe_load(open(output_dir / f"{contract_filename(contract_id)}_dbt.yml", "r", encoding="utf-8")),
+                handle,
+                sort_keys=False,
+                allow_unicode=False,
+            )
 
     snapshot = {
         "contract_id": contract["contract_id"],
@@ -232,10 +263,10 @@ def main() -> None:
         "profile_hash": contract["profile_hash"],
         "column_profiles": contract["column_profiles"],
     }
-    snapshot_path = ROOT / "schema_snapshots" / f"{contract_filename(args.contract_id)}_{contract['generated_at'].replace(':', '').replace('-', '')}.json"
+    snapshot_path = ROOT / "schema_snapshots" / f"{contract_filename(contract_id)}_{contract['generated_at'].replace(':', '').replace('-', '')}.json"
     write_json(snapshot_path, snapshot)
 
-    print(f"Generated {yaml_path}")
+    print(f"Generated {yaml_paths[0]}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,14 @@
+version: 2
+models:
+- name: week5_events
+  columns:
+  - name: schema_version
+    tests:
+    - accepted_values:
+        values:
+        - '1.0'
+  - name: metadata.source_service
+    tests:
+    - accepted_values:
+        values:
+        - week3-document-refinery

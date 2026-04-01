@@ -234,7 +234,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run contract validation against a JSONL dataset.")
     parser.add_argument("--contract", required=True)
     parser.add_argument("--data", required=True)
-    parser.add_argument("--output", required=True)
+    parser.add_argument("--output")
     args = parser.parse_args()
 
     with open(args.contract, "r", encoding="utf-8") as handle:
@@ -259,8 +259,9 @@ def main() -> None:
         "status": summary_status,
         "results": results,
     }
-    write_json(args.output, report)
-    print(f"Validation {summary_status}: wrote {args.output}")
+    output_path = args.output or str(ROOT / "validation_reports" / f"{Path(args.contract).stem}_report.json")
+    write_json(output_path, report)
+    print(f"Validation {summary_status}: wrote {output_path}")
 
 
 if __name__ == "__main__":
