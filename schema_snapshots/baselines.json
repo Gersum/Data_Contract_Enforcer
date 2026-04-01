@@ -1,0 +1,37 @@
+{
+  "written_at": "2026-03-31T22:32:04Z",
+  "columns": {
+    "processing_time_ms": {
+      "mean": 1483.5,
+      "stddev": 225.76332344357996
+    },
+    "token_count.input": {
+      "mean": 4124.5,
+      "stddev": 191.03050445225995
+    },
+    "token_count.output": {
+      "mean": 848.5,
+      "stddev": 52.099228486979996
+    },
+    "entity_count": {
+      "mean": 3.0,
+      "stddev": 0.0
+    },
+    "fact_count": {
+      "mean": 2.0,
+      "stddev": 0.0
+    },
+    "extracted_facts.confidence": {
+      "mean": 5.457083333333333,
+      "stddev": 15.763648875668036
+    },
+    "extracted_facts.page_ref": {
+      "mean": 1.5,
+      "stddev": 0.5020964452534338
+    },
+    "extracted_facts.entity_ref_count": {
+      "mean": 2.0083333333333333,
+      "stddev": 0.09128709291752768
+    }
+  }
+}

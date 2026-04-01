@@ -1,0 +1,6 @@
+version: 1.2.0
+criteria:
+  accuracy:
+    weight: 0.6
+  traceability:
+    weight: 0.4

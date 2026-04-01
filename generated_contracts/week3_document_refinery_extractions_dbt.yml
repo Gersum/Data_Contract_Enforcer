@@ -1,0 +1,22 @@
+version: 2
+models:
+- name: week3_document_refinery_extractions
+  columns:
+  - name: doc_id
+    tests:
+    - not_null
+  - name: entities.type
+    tests:
+    - accepted_values:
+        values:
+        - PERSON
+        - ORG
+        - LOCATION
+        - DATE
+        - AMOUNT
+        - OTHER
+  - name: extraction_model
+    tests:
+    - accepted_values:
+        values:
+        - claude-3-5-sonnet-20241022

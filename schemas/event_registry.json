@@ -1,0 +1,11 @@
+{
+  "DocumentProcessed": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ExtractionStored": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ContractValidated": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  }
+}

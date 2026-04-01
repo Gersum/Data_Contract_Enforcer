@@ -1,0 +1,199 @@
+{
+  "generated_at": "2026-03-31T22:32:04Z",
+  "contract_id": "week3-document-refinery-extractions",
+  "source_data": "outputs/week3/extractions_violated.jsonl",
+  "status": "FAIL",
+  "results": [
+    {
+      "check_id": "week3.doc_id.required",
+      "field": "doc_id",
+      "check_type": "required",
+      "severity": "CRITICAL",
+      "status": "PASS",
+      "message": "Required field present in all profiled rows"
+    },
+    {
+      "check_id": "week3.doc_id.uuid",
+      "field": "doc_id",
+      "check_type": "uuid",
+      "severity": "CRITICAL",
+      "status": "PASS",
+      "message": "All UUID values are valid"
+    },
+    {
+      "check_id": "week3.extracted_at.datetime",
+      "field": "extracted_at",
+      "check_type": "datetime",
+      "severity": "HIGH",
+      "status": "PASS",
+      "message": "All timestamps parse as ISO-8601 UTC"
+    },
+    {
+      "check_id": "week3.processing_time_ms.positive",
+      "field": "processing_time_ms",
+      "check_type": "min",
+      "severity": "HIGH",
+      "status": "PASS",
+      "message": "Minimum threshold satisfied",
+      "expected": 1,
+      "actual_value": 1100
+    },
+    {
+      "check_id": "week3.extracted_facts.confidence.range",
+      "field": "extracted_facts.confidence",
+      "check_type": "range",
+      "severity": "CRITICAL",
+      "status": "FAIL",
+      "message": "Range violation detected: expected 0.0..1.0 but found 0.55..60.0",
+      "expected": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "actual_value": {
+        "minimum": 0.55,
+        "maximum": 60.0
+      },
+      "records_failing": 10,
+      "sample_values": [
+        55.0,
+        56.0,
+        56.0,
+        57.0,
+        57.0
+      ]
+    },
+    {
+      "check_id": "week3.entities.type.enum",
+      "field": "entities.type",
+      "check_type": "enum",
+      "severity": "HIGH",
+      "status": "FAIL",
+      "message": "Enum conformance failed",
+      "records_failing": 1,
+      "sample_values": [
+        "TEAM"
+      ]
+    },
+    {
+      "check_id": "week3.extracted_facts.entity_refs.valid",
+      "field": "extracted_facts.entity_refs_valid",
+      "check_type": "boolean_truth",
+      "severity": "CRITICAL",
+      "status": "FAIL",
+      "message": "Boolean truth check failed",
+      "records_failing": 1
+    },
+    {
+      "check_id": "week3.fact_count.non_zero",
+      "field": "fact_count",
+      "check_type": "min",
+      "severity": "HIGH",
+      "status": "PASS",
+      "message": "Minimum threshold satisfied",
+      "expected": 1,
+      "actual_value": 2
+    },
+    {
+      "check_id": "week3.entity_count.non_zero",
+      "field": "entity_count",
+      "check_type": "min",
+      "severity": "HIGH",
+      "status": "PASS",
+      "message": "Minimum threshold satisfied",
+      "expected": 1,
+      "actual_value": 3
+    },
+    {
+      "check_id": "week3.token_count.input.positive",
+      "field": "token_count.input",
+      "check_type": "min",
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Minimum threshold satisfied",
+      "expected": 1,
+      "actual_value": 3800
+    },
+    {
+      "check_id": "week3.token_count.output.positive",
+      "field": "token_count.output",
+      "check_type": "min",
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Minimum threshold satisfied",
+      "expected": 1,
+      "actual_value": 760
+    },
+    {
+      "check_id": "week3.extraction_model.enum",
+      "field": "extraction_model",
+      "check_type": "enum",
+      "severity": "LOW",
+      "status": "PASS",
+      "message": "Enum conformance passed"
+    },
+    {
+      "check_id": "drift.processing_time_ms",
+      "field": "processing_time_ms",
+      "check_type": "statistical_drift",
+      "severity": "LOW",
+      "status": "BASELINE_SET",
+      "message": "No baseline existed; current profile stored as baseline."
+    },
+    {
+      "check_id": "drift.token_count.input",
+      "field": "token_count.input",
+      "check_type": "statistical_drift",
+      "severity": "LOW",
+      "status": "BASELINE_SET",
+      "message": "No baseline existed; current profile stored as baseline."
+    },
+    {
+      "check_id": "drift.token_count.output",
+      "field": "token_count.output",
+      "check_type": "statistical_drift",
+      "severity": "LOW",
+      "status": "BASELINE_SET",
+      "message": "No baseline existed; current profile stored as baseline."
+    },
+    {
+      "check_id": "drift.entity_count",
+      "field": "entity_count",
+      "check_type": "statistical_drift",
+      "severity": "LOW",
+      "status": "BASELINE_SET",
+      "message": "No baseline existed; current profile stored as baseline."
+    },
+    {
+      "check_id": "drift.fact_count",
+      "field": "fact_count",
+      "check_type": "statistical_drift",
+      "severity": "LOW",
+      "status": "BASELINE_SET",
+      "message": "No baseline existed; current profile stored as baseline."
+    },
+    {
+      "check_id": "drift.extracted_facts.confidence",
+      "field": "extracted_facts.confidence",
+      "check_type": "statistical_drift",
+      "severity": "LOW",
+      "status": "BASELINE_SET",
+      "message": "No baseline existed; current profile stored as baseline."
+    },
+    {
+      "check_id": "drift.extracted_facts.page_ref",
+      "field": "extracted_facts.page_ref",
+      "check_type": "statistical_drift",
+      "severity": "LOW",
+      "status": "BASELINE_SET",
+      "message": "No baseline existed; current profile stored as baseline."
+    },
+    {
+      "check_id": "drift.extracted_facts.entity_ref_count",
+      "field": "extracted_facts.entity_ref_count",
+      "check_type": "statistical_drift",
+      "severity": "LOW",
+      "status": "BASELINE_SET",
+      "message": "No baseline existed; current profile stored as baseline."
+    }
+  ]
+}
