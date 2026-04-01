@@ -1,0 +1,46 @@
+{
+  "weeks": [
+    {
+      "week": 1,
+      "repo_name": "TenX_Day2_Research",
+      "url": "https://github.com/Gersum/TenX_Day2_Research.git",
+      "role": "Intent-Code Correlator source repository",
+      "primary_interface": "outputs/week1/intent_records.jsonl"
+    },
+    {
+      "week": 2,
+      "repo_name": "TenX_W2_Intereme",
+      "url": "https://github.com/Gersum/TenX_W2_Intereme.git",
+      "role": "Digital Courtroom source repository",
+      "primary_interface": "outputs/week2/verdicts.jsonl"
+    },
+    {
+      "week": 3,
+      "repo_name": "DocRefinery",
+      "url": "https://github.com/Gersum/DocRefinery.git",
+      "role": "Document Refinery source repository",
+      "primary_interface": "outputs/week3/extractions.jsonl"
+    },
+    {
+      "week": 4,
+      "repo_name": "The_Brownfield_Cartographer",
+      "url": "https://github.com/Gersum/The_Brownfield_Cartographer.git",
+      "role": "Brownfield Cartographer source repository",
+      "primary_interface": "outputs/week4/lineage_snapshots.jsonl"
+    },
+    {
+      "week": 5,
+      "repo_name": "The_Ledger_2",
+      "url": "https://github.com/Gersum/The_Ledger_2.git",
+      "role": "Event Sourcing Platform source repository",
+      "primary_interface": "outputs/week5/events.jsonl"
+    },
+    {
+      "week": 6,
+      "repo_name": "The_Ledger_2",
+      "url": "https://github.com/Gersum/The_Ledger_2.git",
+      "role": "Week 6 continuation repository reused by the event platform",
+      "primary_interface": "outputs/week5/events.jsonl"
+    }
+  ]
+}
