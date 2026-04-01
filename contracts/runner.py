@@ -42,9 +42,18 @@ def values_for_dataset(records: list[dict], dataset_type: str) -> dict[str, list
 
 
 def run_clause(clause: dict, values: dict[str, list], records: list[dict], dataset_type: str) -> dict:
+    field_present = clause["field"] in values
     field_values = values.get(clause["field"], [])
     non_null = [value for value in field_values if value is not None]
     check_type = clause["check_type"]
+
+    if not field_present:
+        return fail_result(
+            clause,
+            "FAIL",
+            f"Field {clause['field']} is missing from the dataset projection",
+            records_failing=len(records),
+        )
 
     if check_type == "required":
         missing = sum(value is None for value in field_values)
@@ -53,12 +62,16 @@ def run_clause(clause: dict, values: dict[str, list], records: list[dict], datas
         return fail_result(clause, "PASS", "Required field present in all profiled rows")
 
     if check_type == "uuid":
+        if not non_null:
+            return fail_result(clause, "FAIL", "No non-null values available for UUID validation", records_failing=len(field_values))
         invalid = [value for value in non_null if not is_uuid(value)]
         if invalid:
             return fail_result(clause, "FAIL", "Invalid UUID values found", records_failing=len(invalid), sample_values=invalid[:5])
         return fail_result(clause, "PASS", "All UUID values are valid")
 
     if check_type == "datetime":
+        if not non_null:
+            return fail_result(clause, "FAIL", "No non-null values available for datetime validation", records_failing=len(field_values))
         invalid = [value for value in non_null if not is_iso_datetime(value)]
         if invalid:
             return fail_result(clause, "FAIL", "Invalid ISO-8601 timestamps found", records_failing=len(invalid), sample_values=invalid[:5])
@@ -99,6 +112,8 @@ def run_clause(clause: dict, values: dict[str, list], records: list[dict], datas
         )
 
     if check_type == "enum":
+        if not non_null:
+            return fail_result(clause, "FAIL", "No non-null values available for enum validation", records_failing=len(field_values))
         allowed = set(clause["allowed_values"])
         invalid = [value for value in non_null if value not in allowed]
         if invalid:
@@ -106,12 +121,16 @@ def run_clause(clause: dict, values: dict[str, list], records: list[dict], datas
         return fail_result(clause, "PASS", "Enum conformance passed")
 
     if check_type == "boolean_truth":
+        if not non_null:
+            return fail_result(clause, "FAIL", "No non-null values available for boolean validation", records_failing=len(field_values))
         invalid = [value for value in non_null if value is not True]
         if invalid:
             return fail_result(clause, "FAIL", "Boolean truth check failed", records_failing=len(invalid))
         return fail_result(clause, "PASS", "All profiled rows satisfied the boolean check")
 
     if check_type == "pattern":
+        if not non_null:
+            return fail_result(clause, "FAIL", "No non-null values available for pattern validation", records_failing=len(field_values))
         import re
 
         pattern = re.compile(clause["pattern"])
@@ -121,6 +140,8 @@ def run_clause(clause: dict, values: dict[str, list], records: list[dict], datas
         return fail_result(clause, "PASS", "Pattern check passed")
 
     if check_type == "registry_membership":
+        if not non_null:
+            return fail_result(clause, "FAIL", "No non-null values available for registry validation", records_failing=len(field_values))
         registry_path = ROOT / clause["registry_path"]
         with open(registry_path, "r", encoding="utf-8") as handle:
             registry = json.load(handle)
