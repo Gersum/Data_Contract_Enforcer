@@ -1,7 +1,7 @@
 contract_id: week3-extractions
 dataset_type: week3
 source_path: outputs/week3/extractions.jsonl
-generated_at: '2026-04-01T12:16:36Z'
+generated_at: '2026-04-01T23:54:38Z'
 version: 1.0.0
 clauses:
 - check_id: week3.doc_id.required
