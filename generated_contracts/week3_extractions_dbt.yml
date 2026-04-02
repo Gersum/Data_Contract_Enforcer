@@ -55,4 +55,4 @@ models:
     tests:
     - accepted_values:
         values:
-        - claude-3-5-sonnet-20241022
+        - DOCREFINERY_CORPUS

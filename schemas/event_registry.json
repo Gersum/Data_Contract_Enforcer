@@ -1,11 +1,113 @@
 {
-  "DocumentProcessed": {
+  "AgentInputValidated": {
     "required_keys": ["document_id", "status", "fact_count"]
   },
-  "ExtractionStored": {
+  "AgentNodeExecuted": {
     "required_keys": ["document_id", "status", "fact_count"]
   },
-  "ContractValidated": {
+  "AgentOutputWritten": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "AgentSessionCompleted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "AgentSessionStarted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "AgentToolCalled": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ApplicationSubmitted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ApplicationApproved": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ApplicationDeclined": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "DocumentUploadRequested": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "DocumentUploaded": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "DocumentAdded": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "DocumentFormatValidated": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "PackageCreated": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "PackageReadyForAnalysis": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "FraudScreeningCompleted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "FraudScreeningInitiated": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "FraudScreeningRequested": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "PolicyRulesEvaluated": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "DecisionRequested": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "DecisionGenerated": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "KYCCheckCompleted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "CreditAnalysisRequested": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "CreditAnalysisCompleted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "CreditRecordOpened": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "EligibilityDecisionMade": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ComplianceCheckRequested": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ComplianceCheckInitiated": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ComplianceCheckCompleted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ComplianceRulePassed": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ComplianceRuleFailed": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ComplianceRuleNoted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ExtractionStarted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ExtractionCompleted": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "ExtractedFactsConsumed": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "HistoricalProfileConsumed": {
+    "required_keys": ["document_id", "status", "fact_count"]
+  },
+  "QualityAssessmentCompleted": {
     "required_keys": ["document_id", "status", "fact_count"]
   }
 }

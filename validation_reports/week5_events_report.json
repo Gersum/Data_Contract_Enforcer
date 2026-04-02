@@ -1,0 +1,148 @@
+{
+  "generated_at": "2026-04-02T00:27:44Z",
+  "contract_id": "week5-events",
+  "source_data": "outputs/week5/events.jsonl",
+  "status": "PASS",
+  "results": [
+    {
+      "check_id": "week5.event_id.uuid",
+      "field": "event_id",
+      "check_type": "uuid",
+      "severity": "CRITICAL",
+      "status": "PASS",
+      "message": "All UUID values are valid"
+    },
+    {
+      "check_id": "week5.aggregate_id.uuid",
+      "field": "aggregate_id",
+      "check_type": "uuid",
+      "severity": "CRITICAL",
+      "status": "PASS",
+      "message": "All UUID values are valid"
+    },
+    {
+      "check_id": "week5.event_type.pascal_case",
+      "field": "event_type",
+      "check_type": "pattern",
+      "severity": "CRITICAL",
+      "status": "PASS",
+      "message": "Pattern check passed"
+    },
+    {
+      "check_id": "week5.event_type.registry",
+      "field": "event_type",
+      "check_type": "registry_membership",
+      "severity": "CRITICAL",
+      "status": "PASS",
+      "message": "All values are registered"
+    },
+    {
+      "check_id": "week5.aggregate_type.pascal_case",
+      "field": "aggregate_type",
+      "check_type": "pattern",
+      "severity": "HIGH",
+      "status": "PASS",
+      "message": "Pattern check passed"
+    },
+    {
+      "check_id": "week5.sequence_number.positive",
+      "field": "sequence_number",
+      "check_type": "min",
+      "severity": "CRITICAL",
+      "status": "PASS",
+      "message": "Minimum threshold satisfied",
+      "expected": 1,
+      "actual_value": 1
+    },
+    {
+      "check_id": "week5.sequence_number.monotonic",
+      "field": "sequence_number",
+      "check_type": "monotonic_per_aggregate",
+      "severity": "CRITICAL",
+      "status": "PASS",
+      "message": "Sequence numbers are monotonic per aggregate"
+    },
+    {
+      "check_id": "week5.occurred_at.datetime",
+      "field": "occurred_at",
+      "check_type": "datetime",
+      "severity": "HIGH",
+      "status": "PASS",
+      "message": "All timestamps parse as ISO-8601 UTC"
+    },
+    {
+      "check_id": "week5.recorded_at.datetime",
+      "field": "recorded_at",
+      "check_type": "datetime",
+      "severity": "HIGH",
+      "status": "PASS",
+      "message": "All timestamps parse as ISO-8601 UTC"
+    },
+    {
+      "check_id": "week5.recorded_at.after_occurred_at",
+      "field": "recorded_at",
+      "check_type": "temporal_order",
+      "severity": "CRITICAL",
+      "status": "PASS",
+      "message": "Temporal ordering satisfied"
+    },
+    {
+      "check_id": "week5.schema_version.enum",
+      "field": "schema_version",
+      "check_type": "enum",
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Enum conformance passed"
+    },
+    {
+      "check_id": "week5.metadata.source_service.enum",
+      "field": "metadata.source_service",
+      "check_type": "enum",
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Enum conformance passed"
+    },
+    {
+      "check_id": "week5.payload.required_keys",
+      "field": "payload_keys",
+      "check_type": "superset",
+      "severity": "HIGH",
+      "status": "PASS",
+      "message": "Payload contains all required keys"
+    },
+    {
+      "check_id": "drift.sequence_number",
+      "field": "sequence_number",
+      "check_type": "statistical_drift",
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 5.335559265442404,
+        "stddev": 3.243798166621124
+      },
+      "actual_value": {
+        "mean": 5.335559265442404,
+        "stddev": 3.243798166621124
+      }
+    },
+    {
+      "check_id": "drift.payload_size",
+      "field": "payload_size",
+      "check_type": "statistical_drift",
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 11.141903171953256,
+        "stddev": 2.9007354324543333
+      },
+      "actual_value": {
+        "mean": 11.141903171953256,
+        "stddev": 2.9007354324543333
+      }
+    }
+  ]
+}

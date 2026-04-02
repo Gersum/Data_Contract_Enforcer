@@ -136,7 +136,14 @@ def add_week5_clauses(contract: dict, records: list[dict], profiles: dict[str, d
     append_clause(contract, "week5.occurred_at.datetime", "occurred_at", "datetime", "HIGH")
     append_clause(contract, "week5.recorded_at.datetime", "recorded_at", "datetime", "HIGH")
     append_clause(contract, "week5.recorded_at.after_occurred_at", "recorded_at", "temporal_order", "CRITICAL", reference_field="occurred_at")
-    append_clause(contract, "week5.schema_version.enum", "schema_version", "enum", "MEDIUM", allowed_values=["1.0"])
+    append_clause(
+        contract,
+        "week5.schema_version.enum",
+        "schema_version",
+        "enum",
+        "MEDIUM",
+        allowed_values=summarize_enum([record.get("schema_version") for record in records]) or [],
+    )
     append_clause(
         contract,
         "week5.metadata.source_service.enum",

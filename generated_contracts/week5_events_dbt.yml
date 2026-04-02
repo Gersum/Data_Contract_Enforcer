@@ -16,9 +16,42 @@ models:
         regex: ^[A-Z][A-Za-z0-9]+$
     - accepted_values:
         values:
-        - ContractValidated
-        - DocumentProcessed
-        - ExtractionStored
+        - AgentInputValidated
+        - AgentNodeExecuted
+        - AgentOutputWritten
+        - AgentSessionCompleted
+        - AgentSessionStarted
+        - AgentToolCalled
+        - ApplicationApproved
+        - ApplicationDeclined
+        - ApplicationSubmitted
+        - ComplianceCheckCompleted
+        - ComplianceCheckInitiated
+        - ComplianceCheckRequested
+        - ComplianceRuleFailed
+        - ComplianceRuleNoted
+        - ComplianceRulePassed
+        - CreditAnalysisCompleted
+        - CreditAnalysisRequested
+        - CreditRecordOpened
+        - DecisionGenerated
+        - DecisionRequested
+        - DocumentAdded
+        - DocumentFormatValidated
+        - DocumentUploadRequested
+        - DocumentUploaded
+        - EligibilityDecisionMade
+        - ExtractedFactsConsumed
+        - ExtractionCompleted
+        - ExtractionStarted
+        - FraudScreeningCompleted
+        - FraudScreeningInitiated
+        - FraudScreeningRequested
+        - KYCCheckCompleted
+        - PackageCreated
+        - PackageReadyForAnalysis
+        - PolicyRulesEvaluated
+        - QualityAssessmentCompleted
   - name: aggregate_type
     tests:
     - dbt_expectations.expect_column_values_to_match_regex:
@@ -40,11 +73,12 @@ models:
     - accepted_values:
         values:
         - '1.0'
+        - '2.0'
   - name: metadata.source_service
     tests:
     - accepted_values:
         values:
-        - week3-document-refinery
+        - week5-ledger-2
   tests:
   - dbt_utils.unique_combination_of_columns:
       combination_of_columns:
