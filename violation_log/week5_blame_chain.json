@@ -1,0 +1,269 @@
+{
+  "generated_at": "2026-04-02T23:32:34Z",
+  "rows": [
+    {
+      "violation_id": "viol-001",
+      "recorded_at": "2026-04-02T23:32:34Z",
+      "contract_id": "week5-event-records",
+      "check_id": "week5.occurred_at.datetime",
+      "field": "occurred_at",
+      "source_data": "outputs/week5/events_direct_import.jsonl",
+      "input_kind": "validation_report",
+      "status": "FAIL",
+      "severity": "HIGH",
+      "message": "Invalid ISO-8601 timestamps found",
+      "ranked_candidates": [
+        {
+          "rank": 1,
+          "node_id": "service::week5-event-platform",
+          "confidence": 0.92,
+          "reason": "occurred_at is produced by the upstream service in the lineage snapshot."
+        },
+        {
+          "rank": 2,
+          "node_id": "src/events.py",
+          "confidence": 0.71,
+          "reason": "Direct producer file is present in lineage and matches the affected field family."
+        }
+      ],
+      "blame_chain": {
+        "commit_hash": "b4fac6ffc27077b615086971f7b34b85b8be47fa",
+        "author": "Codex Builder",
+        "candidates": [
+          {
+            "rank": 1,
+            "node_id": "service::week5-event-platform",
+            "confidence": 0.92,
+            "reason": "occurred_at is produced by the upstream service in the lineage snapshot."
+          },
+          {
+            "rank": 2,
+            "node_id": "src/events.py",
+            "confidence": 0.71,
+            "reason": "Direct producer file is present in lineage and matches the affected field family."
+          }
+        ]
+      },
+      "git_blame": {
+        "commit": "b4fac6ffc27077b615086971f7b34b85b8be47fa",
+        "author": "Codex Builder"
+      },
+      "blast_radius": {
+        "source": "registry",
+        "mode": "registry_first_with_lineage_enrichment",
+        "direct_subscribers": [
+          {
+            "subscriber_id": "week6-enforcer",
+            "contact": "week6-team@org.com",
+            "validation_mode": "ENFORCE",
+            "reason": "No exact breaking_fields match was declared; subscriber still registered to this contract.",
+            "field": "occurred_at"
+          }
+        ],
+        "subscriber_count": 1,
+        "direct_nodes": [],
+        "transitive_nodes": [],
+        "contamination_depth": 0,
+        "note": "direct_subscribers come from the registry; lineage only enriches how far contamination travels within visible systems."
+      }
+    },
+    {
+      "violation_id": "viol-002",
+      "recorded_at": "2026-04-02T23:32:34Z",
+      "contract_id": "week5-event-records",
+      "check_id": "week5.recorded_at.datetime",
+      "field": "recorded_at",
+      "source_data": "outputs/week5/events_direct_import.jsonl",
+      "input_kind": "validation_report",
+      "status": "FAIL",
+      "severity": "HIGH",
+      "message": "Invalid ISO-8601 timestamps found",
+      "ranked_candidates": [
+        {
+          "rank": 1,
+          "node_id": "service::week5-event-platform",
+          "confidence": 0.92,
+          "reason": "recorded_at is produced by the upstream service in the lineage snapshot."
+        },
+        {
+          "rank": 2,
+          "node_id": "src/events.py",
+          "confidence": 0.71,
+          "reason": "Direct producer file is present in lineage and matches the affected field family."
+        }
+      ],
+      "blame_chain": {
+        "commit_hash": "b4fac6ffc27077b615086971f7b34b85b8be47fa",
+        "author": "Codex Builder",
+        "candidates": [
+          {
+            "rank": 1,
+            "node_id": "service::week5-event-platform",
+            "confidence": 0.92,
+            "reason": "recorded_at is produced by the upstream service in the lineage snapshot."
+          },
+          {
+            "rank": 2,
+            "node_id": "src/events.py",
+            "confidence": 0.71,
+            "reason": "Direct producer file is present in lineage and matches the affected field family."
+          }
+        ]
+      },
+      "git_blame": {
+        "commit": "b4fac6ffc27077b615086971f7b34b85b8be47fa",
+        "author": "Codex Builder"
+      },
+      "blast_radius": {
+        "source": "registry",
+        "mode": "registry_first_with_lineage_enrichment",
+        "direct_subscribers": [
+          {
+            "subscriber_id": "week6-enforcer",
+            "contact": "week6-team@org.com",
+            "validation_mode": "ENFORCE",
+            "reason": "timestamp parsing gates event replay ordering and enforcement windows",
+            "field": "recorded_at"
+          }
+        ],
+        "subscriber_count": 1,
+        "direct_nodes": [],
+        "transitive_nodes": [],
+        "contamination_depth": 0,
+        "note": "direct_subscribers come from the registry; lineage only enriches how far contamination travels within visible systems."
+      }
+    },
+    {
+      "violation_id": "viol-003",
+      "recorded_at": "2026-04-02T23:32:34Z",
+      "contract_id": "week5-event-records",
+      "check_id": "week5.schema_version.enum",
+      "field": "schema_version",
+      "source_data": "outputs/week5/events_direct_import.jsonl",
+      "input_kind": "validation_report",
+      "status": "FAIL",
+      "severity": "MEDIUM",
+      "message": "Enum conformance failed",
+      "ranked_candidates": [
+        {
+          "rank": 1,
+          "node_id": "service::week5-event-platform",
+          "confidence": 0.92,
+          "reason": "schema_version is produced by the upstream service in the lineage snapshot."
+        },
+        {
+          "rank": 2,
+          "node_id": "src/events.py",
+          "confidence": 0.71,
+          "reason": "Direct producer file is present in lineage and matches the affected field family."
+        }
+      ],
+      "blame_chain": {
+        "commit_hash": "b4fac6ffc27077b615086971f7b34b85b8be47fa",
+        "author": "Codex Builder",
+        "candidates": [
+          {
+            "rank": 1,
+            "node_id": "service::week5-event-platform",
+            "confidence": 0.92,
+            "reason": "schema_version is produced by the upstream service in the lineage snapshot."
+          },
+          {
+            "rank": 2,
+            "node_id": "src/events.py",
+            "confidence": 0.71,
+            "reason": "Direct producer file is present in lineage and matches the affected field family."
+          }
+        ]
+      },
+      "git_blame": {
+        "commit": "b4fac6ffc27077b615086971f7b34b85b8be47fa",
+        "author": "Codex Builder"
+      },
+      "blast_radius": {
+        "source": "registry",
+        "mode": "registry_first_with_lineage_enrichment",
+        "direct_subscribers": [
+          {
+            "subscriber_id": "week6-enforcer",
+            "contact": "week6-team@org.com",
+            "validation_mode": "ENFORCE",
+            "reason": "incompatible schema versions change how event payloads are interpreted",
+            "field": "schema_version"
+          }
+        ],
+        "subscriber_count": 1,
+        "direct_nodes": [],
+        "transitive_nodes": [],
+        "contamination_depth": 0,
+        "note": "direct_subscribers come from the registry; lineage only enriches how far contamination travels within visible systems."
+      }
+    },
+    {
+      "violation_id": "viol-004",
+      "recorded_at": "2026-04-02T23:32:34Z",
+      "contract_id": "week5-event-records",
+      "check_id": "week5.payload.required_keys",
+      "field": "payload_keys",
+      "source_data": "outputs/week5/events_direct_import.jsonl",
+      "input_kind": "validation_report",
+      "status": "FAIL",
+      "severity": "HIGH",
+      "message": "Payload keys missing required entries",
+      "ranked_candidates": [
+        {
+          "rank": 1,
+          "node_id": "service::week5-event-platform",
+          "confidence": 0.92,
+          "reason": "payload_keys is produced by the upstream service in the lineage snapshot."
+        },
+        {
+          "rank": 2,
+          "node_id": "src/events.py",
+          "confidence": 0.71,
+          "reason": "Direct producer file is present in lineage and matches the affected field family."
+        }
+      ],
+      "blame_chain": {
+        "commit_hash": "b4fac6ffc27077b615086971f7b34b85b8be47fa",
+        "author": "Codex Builder",
+        "candidates": [
+          {
+            "rank": 1,
+            "node_id": "service::week5-event-platform",
+            "confidence": 0.92,
+            "reason": "payload_keys is produced by the upstream service in the lineage snapshot."
+          },
+          {
+            "rank": 2,
+            "node_id": "src/events.py",
+            "confidence": 0.71,
+            "reason": "Direct producer file is present in lineage and matches the affected field family."
+          }
+        ]
+      },
+      "git_blame": {
+        "commit": "b4fac6ffc27077b615086971f7b34b85b8be47fa",
+        "author": "Codex Builder"
+      },
+      "blast_radius": {
+        "source": "registry",
+        "mode": "registry_first_with_lineage_enrichment",
+        "direct_subscribers": [
+          {
+            "subscriber_id": "week6-enforcer",
+            "contact": "week6-team@org.com",
+            "validation_mode": "ENFORCE",
+            "reason": "missing canonical payload keys prevent downstream health and policy checks",
+            "field": "payload_keys"
+          }
+        ],
+        "subscriber_count": 1,
+        "direct_nodes": [],
+        "transitive_nodes": [],
+        "contamination_depth": 0,
+        "note": "direct_subscribers come from the registry; lineage only enriches how far contamination travels within visible systems."
+      }
+    }
+  ]
+}
