@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from contracts.common import write_json
+from contracts.common import load_registry_subscriptions, subscribers_for_contract, write_json
 
 
 def load_snapshots(contract_id: str) -> list[dict]:
@@ -32,15 +32,37 @@ def compare_profiles(previous: dict, current: dict) -> list[dict]:
     all_fields = sorted(set(previous_cols) | set(current_cols))
     for field in all_fields:
         if field not in previous_cols:
-            changes.append({"field": field, "change_type": "ADDED_FIELD", "compatibility": "FORWARD", "impact": "New field added."})
+            required = current_cols[field].get("null_fraction", 1.0) == 0.0
+            changes.append(
+                {
+                    "field": field,
+                    "change_type": "ADDED_REQUIRED_FIELD" if required else "ADDED_NULLABLE_FIELD",
+                    "compatibility": "BREAKING" if required else "COMPATIBLE",
+                    "impact": "New required field added." if required else "New nullable field added.",
+                }
+            )
             continue
         if field not in current_cols:
             changes.append({"field": field, "change_type": "REMOVED_FIELD", "compatibility": "BREAKING", "impact": "Field removed from current snapshot."})
             continue
         before = previous_cols[field]
         after = current_cols[field]
+        before_required = before.get("null_fraction", 1.0) == 0.0
+        after_required = after.get("null_fraction", 1.0) == 0.0
+        if before_required != after_required:
+            changes.append(
+                {
+                    "field": field,
+                    "change_type": "REQUIREDNESS_TIGHTENED" if after_required else "REQUIREDNESS_RELAXED",
+                    "compatibility": "BREAKING" if after_required else "COMPATIBLE",
+                    "impact": "Field became required." if after_required else "Field became nullable.",
+                }
+            )
         if before["dtype"] != after["dtype"]:
-            is_narrow = (before["dtype"] == "float" and after["dtype"] == "int")
+            numeric_types = {"int", "float", "number", "integer"}
+            is_narrow = (before["dtype"] == "float" and after["dtype"] == "int") or (
+                before["dtype"] in numeric_types and after["dtype"] in numeric_types and before["dtype"] != after["dtype"]
+            )
             changes.append(
                 {
                     "field": field,
@@ -61,7 +83,48 @@ def compare_profiles(previous: dict, current: dict) -> list[dict]:
                         "impact": f"Confidence max moved from {before_max} to {after_max}, indicating a 0.0-1.0 to 0-100 scale break.",
                     }
                 )
+            before_values = set(before.get("sample_values", []))
+            after_values = set(after.get("sample_values", []))
+            if before["dtype"] == "string" and before.get("cardinality_estimate", 999) <= 8 and after.get("cardinality_estimate", 999) <= 8:
+                removed_values = sorted(before_values - after_values)
+                added_values = sorted(after_values - before_values)
+                if removed_values:
+                    changes.append(
+                        {
+                            "field": field,
+                            "change_type": "ENUM_VALUE_REMOVED",
+                            "compatibility": "BREAKING",
+                            "impact": f"Enum-like values removed: {removed_values}",
+                        }
+                    )
+                if added_values:
+                    changes.append(
+                        {
+                            "field": field,
+                            "change_type": "ENUM_VALUE_ADDED",
+                            "compatibility": "COMPATIBLE",
+                            "impact": f"Enum-like values added: {added_values}",
+                        }
+                    )
     return changes
+
+
+def consumer_failure_modes(contract_id: str, registry_path: Path) -> list[dict]:
+    if not registry_path.exists():
+        return []
+    subscriptions = subscribers_for_contract(load_registry_subscriptions(registry_path), contract_id)
+    analyses = []
+    for subscription in subscriptions:
+        analyses.append(
+            {
+                "subscriber_id": subscription.get("subscriber_id"),
+                "validation_mode": subscription.get("validation_mode", "AUDIT"),
+                "fields_consumed": subscription.get("fields_consumed", []),
+                "breaking_fields": subscription.get("breaking_fields", []),
+                "failure_mode": "Consumer must update parsing, thresholds, or downstream joins before accepting the new shape.",
+            }
+        )
+    return analyses
 
 
 def main() -> None:
@@ -70,6 +133,7 @@ def main() -> None:
     parser.add_argument("--previous")
     parser.add_argument("--current")
     parser.add_argument("--since")
+    parser.add_argument("--registry", default="contract_registry/subscriptions.yaml")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
@@ -100,7 +164,8 @@ def main() -> None:
         raise SystemExit("Provide --contract-id or both --previous and --current.")
 
     changes = compare_profiles(previous, current)
-    compatibility = "BREAKING" if any(change["compatibility"] == "BREAKING" for change in changes) else "COMPATIBLE"
+    compatibility = "BREAKING" if any(change["compatibility"] in {"BREAKING", "CRITICAL"} for change in changes) else "COMPATIBLE"
+    registry_path = ROOT / args.registry if not Path(args.registry).is_absolute() else Path(args.registry)
     report = {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "contract_id": contract_id,
@@ -109,6 +174,10 @@ def main() -> None:
         "current_snapshot": current["generated_at"],
         "compatibility_verdict": compatibility,
         "changes": changes,
+        "blast_radius": {
+            "subscriber_count": len(consumer_failure_modes(contract_id, registry_path)),
+            "subscribers": consumer_failure_modes(contract_id, registry_path),
+        },
         "migration_impact_report": [
             "Update week3 consumers to expect confidence values as floats in the 0.0-1.0 range.",
             "Backfill bad records before re-running downstream lineage and event publication jobs.",
@@ -119,6 +188,7 @@ def main() -> None:
             "Re-run contract validation on the clean extraction dataset.",
             "Replay only validated events into the week5 event store.",
         ],
+        "consumer_failure_modes": consumer_failure_modes(contract_id, registry_path),
     }
     write_json(args.output, report)
     print(f"Wrote schema evolution report to {args.output}")

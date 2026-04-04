@@ -2,6 +2,7 @@ import argparse
 import json
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -10,54 +11,45 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from contracts.common import canonical_contract_id, load_registry_subscriptions, read_jsonl, subscribers_for_contract, utc_now, write_json, write_jsonl
+from contracts.common import canonical_contract_id, load_registry_subscriptions, parse_iso8601, read_jsonl, subscribers_for_contract, utc_now, write_json, write_jsonl
 
 
-def latest_git_candidate(upstream_file: str = "src/extractor.py") -> dict:
+def recent_git_candidates(upstream_file: str = "src/extractor.py", limit: int = 5) -> list[dict]:
     try:
-        commit = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
+        result = subprocess.run(
+            ["git", "log", "--follow", f"-n{limit}", "--format=%H|%an|%aI|%s", "--", upstream_file],
             cwd=ROOT,
             check=True,
             capture_output=True,
             text=True,
-        ).stdout.strip()
-        author = subprocess.run(
-            ["git", "log", "-1", "--pretty=%an"],
-            cwd=ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.strip()
-        timestamp = subprocess.run(
-            ["git", "log", "-1", "--pretty=%aI"],
-            cwd=ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.strip()
-        message = subprocess.run(
-            ["git", "log", "-1", "--pretty=%B"],
-            cwd=ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.strip()
-        return {
-            "commit": commit, 
-            "author": author or "Unknown", 
-            "commit_hash": commit,
-            "commit_timestamp": timestamp,
-            "commit_message": message
-        }
+        )
+        candidates = []
+        for raw_line in result.stdout.splitlines():
+            if "|" not in raw_line:
+                continue
+            commit_hash, author, timestamp, message = raw_line.split("|", 3)
+            candidates.append(
+                {
+                    "commit": commit_hash,
+                    "author": author or "Unknown",
+                    "commit_hash": commit_hash,
+                    "commit_timestamp": timestamp,
+                    "commit_message": message,
+                }
+            )
+        if candidates:
+            return candidates
     except Exception:
-        return {
-            "commit": "a" * 40, 
+        pass
+    return [
+        {
+            "commit": "a" * 40,
             "author": "SyntheticSeed",
             "commit_hash": "a" * 40,
             "commit_timestamp": utc_now(),
-            "commit_message": "Automated commit"
+            "commit_message": f"Automated commit for {upstream_file}",
         }
+    ]
 
 
 def producer_node_id(contract: dict) -> str:
@@ -66,6 +58,10 @@ def producer_node_id(contract: dict) -> str:
 
 def producer_file_id(contract: dict) -> str:
     return "file::src/extractor.py" if contract["dataset_type"] == "week3" else "src/events.py"
+
+
+def producer_file_path(contract: dict) -> str:
+    return "src/extractor.py" if contract["dataset_type"] == "week3" else "src/events.py"
 
 
 def load_registry_entries(registry_path: str | None, contract_id: str) -> list[dict]:
@@ -182,6 +178,13 @@ def normalize_violation_input(path: str) -> tuple[str, list[dict]]:
     raise SystemExit(f"Unsupported violation input at {path}")
 
 
+def days_since_commit(commit_timestamp: str, detected_at: str) -> int:
+    commit_time = parse_iso8601(commit_timestamp)
+    detected_time = parse_iso8601(detected_at)
+    delta = detected_time - commit_time
+    return max(0, delta.days)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Attribute contract violations to likely upstream sources.")
     parser.add_argument("--violation", required=True, help="Validation report JSON, single violation JSON, or violation JSONL")
@@ -195,7 +198,7 @@ def main() -> None:
     input_kind, failed = normalize_violation_input(args.violation)
     with open(args.contract, "r", encoding="utf-8") as handle:
         contract = yaml.safe_load(handle)
-    git_candidate = latest_git_candidate()
+    git_candidates = recent_git_candidates(producer_file_path(contract), limit=5)
     lineage_snapshot = load_lineage_snapshot(args.lineage)
     registry_entries = load_registry_entries(args.registry, contract["contract_id"])
     lineage_depth = compute_transitive_depth(producer_node_id(contract), lineage_snapshot)
@@ -204,9 +207,9 @@ def main() -> None:
     for rank, result in enumerate(failed, start=1):
         affected_field = result.get("field") or result.get("check_id", "unknown field")
         direct_subscribers = registry_blast_radius(contract["contract_id"], result.get("field"), registry_entries)
-        days_since_commit = 1  # Simplified assumption for days
+        detected_at = result.get("generated_at") or result.get("recorded_at") or utc_now()
 
-        candidates = [
+        candidate_nodes = [
             (producer_node_id(contract), 0, "Current service producer"),
             (producer_file_id(contract), 1, "Direct code file in producer service"),
             ("previous_deployment", 2, "Previously deployed version trace"),
@@ -215,15 +218,25 @@ def main() -> None:
         ]
 
         ranked_candidates = []
-        for i, (node_id, hops, reason) in enumerate(candidates, start=1):
-            confidence_score = max(0.0, 1.0 - (days_since_commit * 0.1) - (hops * 0.2))
+        for i, (node_id, hops, reason) in enumerate(candidate_nodes[:5], start=1):
+            git_candidate = git_candidates[min(i - 1, len(git_candidates) - 1)]
+            commit_age_days = days_since_commit(git_candidate["commit_timestamp"], detected_at)
+            confidence_score = max(0.0, 1.0 - (commit_age_days * 0.1) - (hops * 0.2))
             ranked_candidates.append({
                 "rank": i,
                 "node_id": node_id,
                 "confidence": round(confidence_score, 2),
-                "reason": reason
+                "confidence_score": round(confidence_score, 2),
+                "lineage_hops": hops,
+                "days_since_commit": commit_age_days,
+                "commit_hash": git_candidate["commit_hash"],
+                "commit_timestamp": git_candidate["commit_timestamp"],
+                "commit_message": git_candidate["commit_message"],
+                "author": git_candidate["author"],
+                "reason": reason,
             })
-            
+
+        primary_git_candidate = git_candidates[0]
         impact_summary = {
             "source": "registry",
             "mode": "registry_first_with_lineage_enrichment" if args.registry else "lineage_only",
@@ -247,14 +260,14 @@ def main() -> None:
             "message": result["message"],
             "ranked_candidates": ranked_candidates,
             "blame_chain": {
-                "commit_hash": git_candidate.get("commit_hash", git_candidate["commit"]),
-                "author": git_candidate["author"],
-                "commit_timestamp": git_candidate.get("commit_timestamp", utc_now()),
-                "commit_message": git_candidate.get("commit_message", "Unknown commit message"),
-                "confidence_score": ranked_candidates[0]["confidence"],
+                "commit_hash": primary_git_candidate.get("commit_hash", primary_git_candidate["commit"]),
+                "author": primary_git_candidate["author"],
+                "commit_timestamp": primary_git_candidate.get("commit_timestamp", utc_now()),
+                "commit_message": primary_git_candidate.get("commit_message", "Unknown commit message"),
+                "confidence_score": ranked_candidates[0]["confidence_score"],
                 "candidates": ranked_candidates,
             },
-            "git_blame": git_candidate,
+            "git_blame": primary_git_candidate,
             "blast_radius": impact_summary,
         }
         rows.append(row)

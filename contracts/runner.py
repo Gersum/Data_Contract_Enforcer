@@ -50,7 +50,7 @@ def run_clause(clause: dict, values: dict[str, list], records: list[dict], datas
     if not field_present:
         return fail_result(
             clause,
-            "FAIL",
+            "ERROR",
             f"Field {clause['field']} is missing from the dataset projection",
             records_failing=len(records),
         )

@@ -1,9 +1,17 @@
 {
-  "generated_at": "2026-04-04T13:35:39Z",
+  "report_id": "dfd7e2ab-ef01-49d5-a9b2-42e1d097ea50",
   "contract_id": "week3-document-refinery-extractions",
+  "snapshot_id": "snap-12345",
+  "run_timestamp": "2026-04-04T19:05:15Z",
+  "generated_at": "2026-04-04T19:05:15Z",
   "source_data": "outputs/week3/extractions_violated.jsonl",
   "mode": "ENFORCE",
   "status": "FAIL",
+  "total_checks": 20,
+  "passed": 15,
+  "failed": 5,
+  "warned": 0,
+  "errored": 0,
   "pipeline_action": "BLOCK",
   "records_validated": 51,
   "results": [
