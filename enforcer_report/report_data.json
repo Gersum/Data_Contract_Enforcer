@@ -1,53 +1,76 @@
 {
-  "generated_at": "2026-04-01T10:13:59Z",
-  "period": "2026-03-25 to 2026-04-01",
-  "data_health_score": 50,
-  "health_narrative": "Score of 50/100. 2 critical issues require immediate attention.",
+  "generated_at": "2026-04-04T18:28:46Z",
+  "period": "2026-03-28 to 2026-04-04",
+  "data_health_score": 47,
+  "health_score_calculation": {
+    "formula": "(checks_passed / total_checks) * 100 - (critical_violations * 20)",
+    "total_checks": 71,
+    "passed_checks": 62,
+    "pass_rate_percent": 87.32,
+    "critical_violations": 2,
+    "critical_penalty_points": 40,
+    "final_score": 47
+  },
+  "health_narrative": "Score of 47/100. 2 critical issues require immediate attention.",
   "top_violations": [
-    "The extracted_facts.confidence field failed a range check. Expected {'minimum': 0.0, 'maximum': 1.0} but found {'minimum': 0.55, 'maximum': 60.0}. This affects 10 records.",
-    "The extracted_facts.entity_refs_valid field failed a boolean_truth check. Expected contract expectation but found observed value. This affects 1 records.",
-    "The entities.type field failed a enum check. Expected contract expectation but found observed value. This affects 1 records."
+    "The extracted_facts.confidence field failed a range check. Expected {'minimum': 0.0, 'maximum': 1.0} but found {'minimum': 0.76, 'maximum': 76.0}. Downstream subscribers affected: week4-cartographer. Records failing: 5.",
+    "The extracted_facts.entity_refs_valid field failed a boolean_truth check. Expected contract expectation but found observed value. Downstream subscribers affected: week4-cartographer. Records failing: 1.",
+    "The occurred_at field failed a datetime check. Expected contract expectation but found observed value. Downstream subscribers affected: week6-enforcer. Records failing: 1198."
   ],
-  "total_violations_by_severity": {
+  "violations_by_severity": {
     "CRITICAL": 2,
-    "HIGH": 1,
-    "MEDIUM": 0,
+    "HIGH": 4,
+    "MEDIUM": 3,
     "LOW": 0
   },
-  "violation_count": 3,
+  "total_violations_by_severity": {
+    "CRITICAL": 2,
+    "HIGH": 4,
+    "MEDIUM": 3,
+    "LOW": 0
+  },
+  "violation_count": 4,
   "schema_changes_detected": [
     {
       "field": "extracted_facts.confidence",
       "change_type": "SEMANTIC_RANGE_SHIFT",
       "compatibility": "BREAKING",
-      "impact": "Confidence max moved from 0.94 to 60.0, indicating a 0.0-1.0 to 0-100 scale break."
+      "impact": "Confidence max moved from 0.76 to 76.0, indicating a 0.0-1.0 to 0-100 scale break."
     }
   ],
   "ai_system_risk_assessment": [
     {
       "name": "embedding_drift",
       "status": "PASS",
-      "drift_score": 0.0129,
-      "baseline_size": 60,
-      "current_size": 60
+      "drift_score": 0.0,
+      "threshold": 0.15,
+      "baseline_size": 51,
+      "current_size": 51,
+      "interpretation": "stable",
+      "embedding_model": "local-hashed-embedding"
     },
     {
       "name": "prompt_input_schema",
       "status": "PASS",
-      "records_failing": 0,
-      "sample_values": []
+      "valid": 51,
+      "quarantined": 0,
+      "sample_values": [],
+      "quarantine_path": "outputs/quarantine/quarantine.jsonl"
     },
     {
-      "name": "llm_output_schema",
+      "name": "output_violation_rate",
       "status": "PASS",
+      "total_outputs": 4,
+      "schema_violations": 0,
       "violation_rate": 0.0,
-      "records_failing": 0,
-      "sample_values": []
+      "trend": "stable",
+      "baseline_rate": 0.0,
+      "warn_threshold": 0.02
     }
   ],
   "recommended_actions": [
-    "Update src/extractor.py and upstream generation logic so extracted_facts.confidence remains a float in the 0.0-1.0 range.",
-    "Reject week3 records with dangling entity_refs or invalid entity types before they reach lineage and event consumers.",
-    "Add contract generation and runner commands to CI so week3 and week5 interfaces are validated on every change."
+    "Update src/extractor.py so extracted_facts.confidence continues to satisfy clause `week3.extracted_facts.confidence.range` with values in the 0.0-1.0 range, and keep contracts/runner.py in CI to block future scale drift.",
+    "Update src/extractor.py so extracted_facts.entity_refs only reference emitted entity_ids and satisfy clause `week3.extracted_facts.entity_refs.valid` before Week 3 records are published.",
+    "Normalize occurred_at, recorded_at, and schema_version in outputs/migrate/create_week5_direct_import.py and src/events.py so clauses `week5.occurred_at.datetime`, `week5.recorded_at.datetime`, and `week5.schema_version.enum` pass before ingestion."
   ]
 }

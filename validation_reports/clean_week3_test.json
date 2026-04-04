@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-04-04T13:35:39Z",
+  "generated_at": "2026-04-02T23:39:17Z",
   "contract_id": "week3-document-refinery-extractions",
-  "source_data": "outputs/week3/extractions_violated.jsonl",
-  "mode": "ENFORCE",
-  "status": "FAIL",
-  "pipeline_action": "BLOCK",
+  "source_data": "outputs/week3/extractions.jsonl",
+  "mode": "AUDIT",
+  "status": "PASS",
+  "pipeline_action": "ALLOW",
   "records_validated": 51,
   "results": [
     {
@@ -46,45 +46,32 @@
       "field": "extracted_facts.confidence",
       "check_type": "range",
       "severity": "CRITICAL",
-      "status": "FAIL",
-      "message": "Range violation detected: expected 0.0..1.0 but found 0.76..76.0",
+      "status": "PASS",
+      "message": "All values stayed within the expected range",
       "expected": {
         "minimum": 0.0,
         "maximum": 1.0
       },
       "actual_value": {
         "minimum": 0.76,
-        "maximum": 76.0
-      },
-      "records_failing": 5,
-      "sample_values": [
-        76.0,
-        76.0,
-        76.0,
-        76.0,
-        76.0
-      ]
+        "maximum": 0.76
+      }
     },
     {
       "check_id": "week3.entities.type.enum",
       "field": "entities.type",
       "check_type": "enum",
       "severity": "HIGH",
-      "status": "FAIL",
-      "message": "Enum conformance failed",
-      "records_failing": 1,
-      "sample_values": [
-        "TEAM"
-      ]
+      "status": "PASS",
+      "message": "Enum conformance passed"
     },
     {
       "check_id": "week3.extracted_facts.entity_refs.valid",
       "field": "extracted_facts.entity_refs_valid",
       "check_type": "boolean_truth",
       "severity": "CRITICAL",
-      "status": "FAIL",
-      "message": "Boolean truth check failed",
-      "records_failing": 1
+      "status": "PASS",
+      "message": "All profiled rows satisfied the boolean check"
     },
     {
       "check_id": "week3.fact_count.non_zero",
@@ -224,16 +211,16 @@
       "field": "extracted_facts.confidence",
       "check_type": "statistical_drift",
       "severity": "MEDIUM",
-      "status": "FAIL",
-      "message": "Current mean differs from baseline by 7376470588.24 stddev.",
-      "z_score": 7376470588.24,
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
       "expected": {
         "mean": 0.76,
         "stddev": 0.0
       },
       "actual_value": {
-        "mean": 8.136470588235294,
-        "stddev": 22.59657485757781
+        "mean": 0.76,
+        "stddev": 0.0
       }
     },
     {
@@ -258,16 +245,16 @@
       "field": "extracted_facts.entity_ref_count",
       "check_type": "statistical_drift",
       "severity": "MEDIUM",
-      "status": "FAIL",
-      "message": "Current mean differs from baseline by 19607843.14 stddev.",
-      "z_score": 19607843.14,
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
       "expected": {
         "mean": 2.0,
         "stddev": 0.0
       },
       "actual_value": {
-        "mean": 2.019607843137255,
-        "stddev": 0.14002800840280097
+        "mean": 2.0,
+        "stddev": 0.0
       }
     }
   ]

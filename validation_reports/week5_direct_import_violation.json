@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-04-02T23:24:35Z",
+  "generated_at": "2026-04-02T23:24:05Z",
   "contract_id": "week5-event-records",
-  "source_data": "outputs/week5/events.jsonl",
-  "mode": "AUDIT",
-  "status": "PASS",
-  "pipeline_action": "ALLOW",
+  "source_data": "outputs/week5/events_direct_import.jsonl",
+  "mode": "ENFORCE",
+  "status": "FAIL",
+  "pipeline_action": "BLOCK",
   "records_validated": 1198,
   "results": [
     {
@@ -70,16 +70,32 @@
       "field": "occurred_at",
       "check_type": "datetime",
       "severity": "HIGH",
-      "status": "PASS",
-      "message": "All timestamps parse as ISO-8601 UTC"
+      "status": "FAIL",
+      "message": "Invalid ISO-8601 timestamps found",
+      "records_failing": 1198,
+      "sample_values": [
+        "2026-02-26T19:40:30.665979Z",
+        "2026-02-26T19:40:30.665979Z",
+        "2026-02-26T19:40:50.665979Z",
+        "2026-03-04T19:41:30.667371Z",
+        "2026-03-04T19:41:30.667371Z"
+      ]
     },
     {
       "check_id": "week5.recorded_at.datetime",
       "field": "recorded_at",
       "check_type": "datetime",
       "severity": "HIGH",
-      "status": "PASS",
-      "message": "All timestamps parse as ISO-8601 UTC"
+      "status": "FAIL",
+      "message": "Invalid ISO-8601 timestamps found",
+      "records_failing": 1198,
+      "sample_values": [
+        "2026-02-26T19:40:30.665979Z",
+        "2026-02-26T19:40:30.665979Z",
+        "2026-02-26T19:40:50.665979Z",
+        "2026-03-04T19:41:30.667371Z",
+        "2026-03-04T19:41:30.667371Z"
+      ]
     },
     {
       "check_id": "week5.recorded_at.after_occurred_at",
@@ -94,8 +110,16 @@
       "field": "schema_version",
       "check_type": "enum",
       "severity": "MEDIUM",
-      "status": "PASS",
-      "message": "Enum conformance passed"
+      "status": "FAIL",
+      "message": "Enum conformance failed",
+      "records_failing": 1198,
+      "sample_values": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1"
+      ]
     },
     {
       "check_id": "week5.metadata.source_service.enum",
@@ -110,8 +134,51 @@
       "field": "payload_keys",
       "check_type": "superset",
       "severity": "HIGH",
-      "status": "PASS",
-      "message": "Payload contains all required keys"
+      "status": "FAIL",
+      "message": "Payload keys missing required entries",
+      "records_failing": 1198,
+      "sample_values": [
+        {
+          "event_id": "1d9ac2da-5896-5463-8286-ed22255e4619",
+          "missing_keys": [
+            "document_id",
+            "fact_count",
+            "status"
+          ]
+        },
+        {
+          "event_id": "a7d29776-d210-544a-a062-c196b875b5b0",
+          "missing_keys": [
+            "document_id",
+            "fact_count",
+            "status"
+          ]
+        },
+        {
+          "event_id": "35176a80-9dad-5a4c-9e90-e7f562ab9c35",
+          "missing_keys": [
+            "document_id",
+            "fact_count",
+            "status"
+          ]
+        },
+        {
+          "event_id": "b633f5ba-4364-5ead-b53d-a5ddf7bcf57b",
+          "missing_keys": [
+            "document_id",
+            "fact_count",
+            "status"
+          ]
+        },
+        {
+          "event_id": "c57b4b6f-e771-565c-808d-1d5eb331cfc5",
+          "missing_keys": [
+            "document_id",
+            "fact_count",
+            "status"
+          ]
+        }
+      ]
     },
     {
       "check_id": "drift.sequence_number",
@@ -136,15 +203,15 @@
       "check_type": "statistical_drift",
       "severity": "MEDIUM",
       "status": "PASS",
-      "message": "Current mean differs from baseline by 0.00 stddev.",
-      "z_score": 0.0,
+      "message": "Current mean differs from baseline by 0.95 stddev.",
+      "z_score": 0.95,
       "expected": {
         "mean": 11.141903171953256,
         "stddev": 2.9007354324543333
       },
       "actual_value": {
-        "mean": 11.141903171953256,
-        "stddev": 2.9007354324543333
+        "mean": 8.400667779632721,
+        "stddev": 2.820985842625052
       }
     }
   ]

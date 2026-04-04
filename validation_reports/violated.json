@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-04T13:35:39Z",
+  "generated_at": "2026-04-02T23:25:22Z",
   "contract_id": "week3-document-refinery-extractions",
   "source_data": "outputs/week3/extractions_violated.jsonl",
   "mode": "ENFORCE",

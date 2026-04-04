@@ -1,8 +1,11 @@
 {
-  "generated_at": "2026-04-02T00:26:31Z",
-  "contract_id": "week3-extractions",
+  "generated_at": "2026-04-02T23:28:40Z",
+  "contract_id": "week3-document-refinery-extractions",
   "source_data": "outputs/week3/extractions.jsonl",
+  "mode": "AUDIT",
   "status": "PASS",
+  "pipeline_action": "ALLOW",
+  "records_validated": 51,
   "results": [
     {
       "check_id": "week3.doc_id.required",
@@ -122,65 +125,137 @@
       "check_id": "drift.processing_time_ms",
       "field": "processing_time_ms",
       "check_type": "statistical_drift",
-      "severity": "LOW",
-      "status": "BASELINE_SET",
-      "message": "No baseline existed; current profile stored as baseline."
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 1000.0,
+        "stddev": 0.0
+      },
+      "actual_value": {
+        "mean": 1000.0,
+        "stddev": 0.0
+      }
     },
     {
       "check_id": "drift.token_count.input",
       "field": "token_count.input",
       "check_type": "statistical_drift",
-      "severity": "LOW",
-      "status": "BASELINE_SET",
-      "message": "No baseline existed; current profile stored as baseline."
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 39.88235294117647,
+        "stddev": 64.09357239327221
+      },
+      "actual_value": {
+        "mean": 39.88235294117647,
+        "stddev": 64.09357239327221
+      }
     },
     {
       "check_id": "drift.token_count.output",
       "field": "token_count.output",
       "check_type": "statistical_drift",
-      "severity": "LOW",
-      "status": "BASELINE_SET",
-      "message": "No baseline existed; current profile stored as baseline."
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 9.470588235294118,
+        "stddev": 1.7275053974092363
+      },
+      "actual_value": {
+        "mean": 9.470588235294118,
+        "stddev": 1.7275053974092363
+      }
     },
     {
       "check_id": "drift.entity_count",
       "field": "entity_count",
       "check_type": "statistical_drift",
-      "severity": "LOW",
-      "status": "BASELINE_SET",
-      "message": "No baseline existed; current profile stored as baseline."
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 2.0,
+        "stddev": 0.0
+      },
+      "actual_value": {
+        "mean": 2.0,
+        "stddev": 0.0
+      }
     },
     {
       "check_id": "drift.fact_count",
       "field": "fact_count",
       "check_type": "statistical_drift",
-      "severity": "LOW",
-      "status": "BASELINE_SET",
-      "message": "No baseline existed; current profile stored as baseline."
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 1.0,
+        "stddev": 0.0
+      },
+      "actual_value": {
+        "mean": 1.0,
+        "stddev": 0.0
+      }
     },
     {
       "check_id": "drift.extracted_facts.confidence",
       "field": "extracted_facts.confidence",
       "check_type": "statistical_drift",
-      "severity": "LOW",
-      "status": "BASELINE_SET",
-      "message": "No baseline existed; current profile stored as baseline."
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 0.76,
+        "stddev": 0.0
+      },
+      "actual_value": {
+        "mean": 0.76,
+        "stddev": 0.0
+      }
     },
     {
       "check_id": "drift.extracted_facts.page_ref",
       "field": "extracted_facts.page_ref",
       "check_type": "statistical_drift",
-      "severity": "LOW",
-      "status": "BASELINE_SET",
-      "message": "No baseline existed; current profile stored as baseline."
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 1.2333333333333334,
+        "stddev": 0.6260623155792926
+      },
+      "actual_value": {
+        "mean": 1.2333333333333334,
+        "stddev": 0.6260623155792926
+      }
     },
     {
       "check_id": "drift.extracted_facts.entity_ref_count",
       "field": "extracted_facts.entity_ref_count",
       "check_type": "statistical_drift",
-      "severity": "LOW",
-      "status": "BASELINE_SET",
-      "message": "No baseline existed; current profile stored as baseline."
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "message": "Current mean differs from baseline by 0.00 stddev.",
+      "z_score": 0.0,
+      "expected": {
+        "mean": 2.0,
+        "stddev": 0.0
+      },
+      "actual_value": {
+        "mean": 2.0,
+        "stddev": 0.0
+      }
     }
   ]
 }

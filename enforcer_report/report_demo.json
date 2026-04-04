@@ -1,0 +1,54 @@
+{
+  "generated_at": "2026-04-04T10:09:45Z",
+  "period": "2026-03-28 to 2026-04-04",
+  "data_health_score": 5,
+  "health_narrative": "Score of 5/100. 2 critical issues require immediate attention.",
+  "top_violations": [
+    "The extracted_facts.confidence field failed a range check. Expected {'minimum': 0.0, 'maximum': 1.0} but found {'minimum': 0.76, 'maximum': 76.0}. Downstream subscribers affected: no registered subscribers. Records failing: 5.",
+    "The extracted_facts.entity_refs_valid field failed a boolean_truth check. Expected contract expectation but found observed value. Downstream subscribers affected: no registered subscribers. Records failing: 1.",
+    "The occurred_at field failed a datetime check. Expected contract expectation but found observed value. Downstream subscribers affected: no registered subscribers. Records failing: 1198."
+  ],
+  "total_violations_by_severity": {
+    "CRITICAL": 2,
+    "HIGH": 4,
+    "MEDIUM": 3,
+    "LOW": 0
+  },
+  "violation_count": 4,
+  "schema_changes_detected": [],
+  "ai_system_risk_assessment": [
+    {
+      "name": "embedding_drift",
+      "status": "PASS",
+      "drift_score": 0.0,
+      "threshold": 0.15,
+      "baseline_size": 51,
+      "current_size": 51,
+      "interpretation": "stable",
+      "embedding_model": "local-hashed-embedding"
+    },
+    {
+      "name": "prompt_input_schema",
+      "status": "PASS",
+      "valid": 51,
+      "quarantined": 0,
+      "sample_values": [],
+      "quarantine_path": "outputs/quarantine/quarantine.jsonl"
+    },
+    {
+      "name": "output_violation_rate",
+      "status": "PASS",
+      "total_outputs": 4,
+      "schema_violations": 0,
+      "violation_rate": 0.0,
+      "trend": "stable",
+      "baseline_rate": 0.0,
+      "warn_threshold": 0.02
+    }
+  ],
+  "recommended_actions": [
+    "Update src/extractor.py so extracted_facts.confidence stays on the 0.0-1.0 scale, and keep contracts/runner.py in CI to block future scale drift.",
+    "Update src/extractor.py to emit valid entity types and only reference existing entity_ids before week3 records are published.",
+    "Normalize raw Week 5 event timestamps and schema_version in outputs/migrate/create_week5_direct_import.py, and enforce the canonical shape in src/events.py before ingestion."
+  ]
+}
