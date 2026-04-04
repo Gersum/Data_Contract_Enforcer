@@ -1,5 +1,5 @@
 {
-  "written_at": "2026-04-02T00:27:44Z",
+  "written_at": "2026-04-02T23:39:17Z",
   "columns": {
     "sequence_number": {
       "mean": 5.335559265442404,
@@ -8,6 +8,38 @@
     "payload_size": {
       "mean": 11.141903171953256,
       "stddev": 2.9007354324543333
+    },
+    "processing_time_ms": {
+      "mean": 1000.0,
+      "stddev": 0.0
+    },
+    "token_count.input": {
+      "mean": 39.88235294117647,
+      "stddev": 64.09357239327221
+    },
+    "token_count.output": {
+      "mean": 9.470588235294118,
+      "stddev": 1.7275053974092363
+    },
+    "entity_count": {
+      "mean": 2.0,
+      "stddev": 0.0
+    },
+    "fact_count": {
+      "mean": 1.0,
+      "stddev": 0.0
+    },
+    "extracted_facts.confidence": {
+      "mean": 0.76,
+      "stddev": 0.0
+    },
+    "extracted_facts.page_ref": {
+      "mean": 1.2333333333333334,
+      "stddev": 0.6260623155792926
+    },
+    "extracted_facts.entity_ref_count": {
+      "mean": 2.0,
+      "stddev": 0.0
     }
   }
 }

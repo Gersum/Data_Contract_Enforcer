@@ -1,0 +1,498 @@
+{
+  "contract_id": "week3-document-refinery-extractions",
+  "generated_at": "2026-04-02T23:25:22Z",
+  "profile_hash": "2f52866dbb256eac34e29734db28872304941790306af80a0948228ec20b2ce4",
+  "column_profiles": {
+    "doc_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 51,
+      "sample_values": [
+        "755c7f2c-5927-51d6-ac6a-67a3fa594475",
+        "755c7f2c-5927-51d6-ac6a-67a3fa594475",
+        "a137700f-b270-5408-8af5-f336dbac3656",
+        "a137700f-b270-5408-8af5-f336dbac3656",
+        "0eb0b75c-b240-53c9-9eaa-bc15599f951d"
+      ]
+    },
+    "source_path": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 51,
+      "sample_values": [
+        "/Users/gersumasfaw/Downloads/week3/corpus/2013-E.C-Assigned-regular-budget-and-expense.pdf",
+        "/Users/gersumasfaw/Downloads/week3/corpus/2013-E.C-Assigned-regular-budget-and-expense.pdf",
+        "/Users/gersumasfaw/Downloads/week3/corpus/2013-E.C-Audit-finding-information.pdf",
+        "/Users/gersumasfaw/Downloads/week3/corpus/2013-E.C-Audit-finding-information.pdf",
+        "/Users/gersumasfaw/Downloads/week3/corpus/2013-E.C-Procurement-information.pdf"
+      ]
+    },
+    "source_hash": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 49,
+      "sample_values": [
+        "45bc9cf4ff5ce1ac41a5240e6cc71e9b9809a25e078259afced4ebfcd7014b85",
+        "45bc9cf4ff5ce1ac41a5240e6cc71e9b9809a25e078259afced4ebfcd7014b85",
+        "7b8976e32efc895a1ab0f78fb4376f3e1431dfa432b4c61b4427b30b1e103ab8",
+        "7b8976e32efc895a1ab0f78fb4376f3e1431dfa432b4c61b4427b30b1e103ab8",
+        "4a67ebdf892c8fce342935b5e109795989d03cfd0602781fb2ea586b2c8c1ca1"
+      ]
+    },
+    "extraction_model": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        "DOCREFINERY_CORPUS",
+        "DOCREFINERY_CORPUS",
+        "DOCREFINERY_CORPUS",
+        "DOCREFINERY_CORPUS",
+        "DOCREFINERY_CORPUS"
+      ]
+    },
+    "processing_time_ms": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        1000,
+        1000,
+        1000,
+        1000,
+        1000
+      ],
+      "stats": {
+        "min": 1000.0,
+        "max": 1000.0,
+        "mean": 1000.0,
+        "p25": 1000.0,
+        "p50": 1000.0,
+        "p75": 1000.0,
+        "p95": 1000.0,
+        "p99": 1000.0,
+        "stddev": 0.0
+      }
+    },
+    "token_count.input": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 20,
+      "sample_values": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "stats": {
+        "min": 1.0,
+        "max": 181.0,
+        "mean": 39.88235294117647,
+        "p25": 4.0,
+        "p50": 6.0,
+        "p75": 33.0,
+        "p95": 179.95,
+        "p99": 180.99,
+        "stddev": 64.09357239327221
+      }
+    },
+    "token_count.output": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 3,
+      "sample_values": [
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "stats": {
+        "min": 8.0,
+        "max": 12.0,
+        "mean": 9.470588235294118,
+        "p25": 8.0,
+        "p50": 8.0,
+        "p75": 11.0,
+        "p95": 12.0,
+        "p99": 12.0,
+        "stddev": 1.7275053974092363
+      }
+    },
+    "extracted_at": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 49,
+      "sample_values": [
+        "2025-12-30T15:31:18Z",
+        "2025-12-30T15:31:18Z",
+        "2025-12-30T15:31:17Z",
+        "2025-12-30T15:31:17Z",
+        "2025-12-30T15:31:19Z"
+      ]
+    },
+    "entity_count": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "stats": {
+        "min": 2.0,
+        "max": 2.0,
+        "mean": 2.0,
+        "p25": 2.0,
+        "p50": 2.0,
+        "p75": 2.0,
+        "p95": 2.0,
+        "p99": 2.0,
+        "stddev": 0.0
+      }
+    },
+    "fact_count": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "stats": {
+        "min": 1.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "p25": 1.0,
+        "p50": 1.0,
+        "p75": 1.0,
+        "p95": 1.0,
+        "p99": 1.0,
+        "stddev": 0.0
+      }
+    },
+    "entities.entity_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 102,
+      "sample_values": [
+        "0792aac9-31f0-5daf-b7a3-9f1a31a04393",
+        "1c2633de-4479-5ab2-9919-3699bcb9176b",
+        "bf9036a7-4d76-5700-b340-62b9f6cea128",
+        "f30ce4a4-0f22-5173-a0b0-3ce95caed157",
+        "e1a02522-312d-5492-867b-3d3de71d4412"
+      ]
+    },
+    "entities.type": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 4,
+      "sample_values": [
+        "TEAM",
+        "OTHER",
+        "DATE",
+        "OTHER",
+        "DATE"
+      ]
+    },
+    "entities.name": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 52,
+      "sample_values": [
+        "2013-E.C-Assigned-regular-budget-and-expense",
+        "DOCREFINERY_CORPUS",
+        "2013-E.C-Audit-finding-information",
+        "DOCREFINERY_CORPUS",
+        "2013-E.C-Procurement-information"
+      ]
+    },
+    "entities.canonical_value": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 52,
+      "sample_values": [
+        "2013-E.C-Assigned-regular-budget-and-expense",
+        "DOCREFINERY_CORPUS",
+        "2013-E.C-Audit-finding-information",
+        "DOCREFINERY_CORPUS",
+        "2013-E.C-Procurement-information"
+      ]
+    },
+    "extracted_facts.fact_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 51,
+      "sample_values": [
+        "1078766e-dd9d-5136-b6bf-7cebccd8f428",
+        "85677e29-4dd1-5ca3-848f-ebfcbd4bcd6b",
+        "aa5f89f6-2f52-5c34-964a-237073c2eb2a",
+        "c4a85c96-0622-52c7-8541-09cf276b0a25",
+        "0300a97d-f873-5ebe-a47a-c42952bd2a51"
+      ]
+    },
+    "extracted_facts.confidence": {
+      "dtype": "number",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 2,
+      "sample_values": [
+        76.0,
+        76.0,
+        76.0,
+        76.0,
+        76.0
+      ],
+      "stats": {
+        "min": 0.76,
+        "max": 76.0,
+        "mean": 8.136470588235294,
+        "p25": 0.76,
+        "p50": 0.76,
+        "p75": 0.76,
+        "p95": 76.0,
+        "p99": 76.0,
+        "stddev": 22.59657485757781
+      }
+    },
+    "extracted_facts.page_ref": {
+      "dtype": "integer",
+      "null_fraction": 0.4118,
+      "cardinality_estimate": 3,
+      "sample_values": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "stats": {
+        "min": 1.0,
+        "max": 3.0,
+        "mean": 1.2333333333333334,
+        "p25": 1.0,
+        "p50": 1.0,
+        "p75": 1.0,
+        "p95": 3.0,
+        "p99": 3.0,
+        "stddev": 0.6260623155792926
+      }
+    },
+    "extracted_facts.text": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 51,
+      "sample_values": [
+        "DocRefinery processed document '2013-E.C-Assigned-regular-budget-and-expense' from the real corpus.",
+        "DocRefinery processed document '2013-E.C-Audit-finding-information' from the real corpus.",
+        "DocRefinery processed document '2013-E.C-Procurement-information' from the real corpus.",
+        "DocRefinery processed document '2018_Audited_Financial_Statement_Report' from the real corpus.",
+        "DocRefinery processed document '20191010_Pharmaceutical-Manufacturing-Opportunites-in-Ethiopia_VF' from the real corpus."
+      ]
+    },
+    "extracted_facts.source_excerpt": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 51,
+      "sample_values": [
+        "2013-E.C-Assigned-regular-budget-and-expense",
+        "2013-E.C-Audit-finding-information",
+        "2013-E.C-Procurement-information",
+        "2018 Audited Financial Statement Report",
+        "Ethiopia Emerging manufacturing hub in Af rica Attractive investment opportunities Enablers & support"
+      ]
+    },
+    "extracted_facts.entity_ref_count": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 2,
+      "sample_values": [
+        2,
+        3,
+        2,
+        2,
+        2
+      ],
+      "stats": {
+        "min": 2.0,
+        "max": 3.0,
+        "mean": 2.019607843137255,
+        "p25": 2.0,
+        "p50": 2.0,
+        "p75": 2.0,
+        "p95": 2.0,
+        "p99": 2.5,
+        "stddev": 0.14002800840280097
+      }
+    },
+    "extracted_facts.entity_refs_valid": {
+      "dtype": "boolean",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 2,
+      "sample_values": [
+        true,
+        false,
+        true,
+        true,
+        true
+      ]
+    }
+  },
+  "lineage": {
+    "upstream": [
+      {
+        "id": "file::src/extractor.py",
+        "relationship": "CALLS",
+        "confidence": 0.92
+      }
+    ],
+    "downstream": [
+      {
+        "node_id": "pipeline::week7-contract-enforcer",
+        "relationship": "PRODUCES",
+        "confidence": 0.97
+      },
+      {
+        "node_id": "service::week5-event-platform",
+        "relationship": "PRODUCES",
+        "confidence": 0.89
+      },
+      {
+        "node_id": "doc::e673ce49-e23f-4a22-8f85-16a059f7161c",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::a1c30d46-6979-4694-a877-820f2039e647",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::42526579-478a-4ab5-8b24-1286e1dc2fb0",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::921aec95-d45a-4d49-9a0c-bb1fdfab3328",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::6ebafa2d-b455-4a17-8e54-f8e6c7b0e165",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::f0d71b08-fb21-451d-98e5-504ac475c333",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::d55cdc15-cdd5-4ab6-8800-98b9c4585041",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::0abdbecf-a841-4ce3-b4e6-537e7b51691a",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::eb18a678-1bb4-49dd-ac5d-155d622a1101",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::5f16ba0d-abb4-4632-b62e-ffbee5dd0278",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      }
+    ],
+    "downstream_nodes_from_lineage": [
+      {
+        "node_id": "pipeline::week7-contract-enforcer",
+        "relationship": "PRODUCES",
+        "confidence": 0.97
+      },
+      {
+        "node_id": "service::week5-event-platform",
+        "relationship": "PRODUCES",
+        "confidence": 0.89
+      },
+      {
+        "node_id": "doc::e673ce49-e23f-4a22-8f85-16a059f7161c",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::a1c30d46-6979-4694-a877-820f2039e647",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::42526579-478a-4ab5-8b24-1286e1dc2fb0",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::921aec95-d45a-4d49-9a0c-bb1fdfab3328",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::6ebafa2d-b455-4a17-8e54-f8e6c7b0e165",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::f0d71b08-fb21-451d-98e5-504ac475c333",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::d55cdc15-cdd5-4ab6-8800-98b9c4585041",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::0abdbecf-a841-4ce3-b4e6-537e7b51691a",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::eb18a678-1bb4-49dd-ac5d-155d622a1101",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      },
+      {
+        "node_id": "doc::5f16ba0d-abb4-4632-b62e-ffbee5dd0278",
+        "relationship": "PRODUCES",
+        "confidence": 0.94
+      }
+    ],
+    "registry_subscribers": [
+      {
+        "subscriber_id": "week4-cartographer",
+        "validation_mode": "AUDIT",
+        "contact": "week4-team@org.com",
+        "breaking_fields": [
+          {
+            "field": "extracted_facts.confidence",
+            "reason": "used for node ranking; a 0.0-1.0 to 0-100 scale change breaks ordering and downstream trust scores"
+          },
+          {
+            "field": "doc_id",
+            "reason": "primary key used as the lineage node identity"
+          }
+        ]
+      }
+    ],
+    "note": "Blast radius uses registry_subscribers as the primary source. Lineage nodes are enrichment only."
+  }
+}

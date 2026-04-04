@@ -1,0 +1,270 @@
+{
+  "contract_id": "week5-event-records",
+  "generated_at": "2026-04-02T23:23:47Z",
+  "profile_hash": "62b5271cc330ddd162ed8146fc6c0088a1441e0ffceacf8b014ffb41203d80e4",
+  "column_profiles": {
+    "event_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1198,
+      "sample_values": [
+        "6784050c-0c1f-5994-bd00-a4ae7ca2cc29",
+        "85e5394f-d98f-5b34-9eaa-c733268a9569",
+        "6c280f8c-f091-58d5-a5f6-9e4a54969a53",
+        "10735aa1-ab30-55b1-8ea7-b7be22794954",
+        "2a1c0f0c-2fb2-5398-b125-1f676e7b054d"
+      ]
+    },
+    "event_type": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 34,
+      "sample_values": [
+        "ApplicationSubmitted",
+        "DocumentUploadRequested",
+        "PackageCreated",
+        "ApplicationSubmitted",
+        "DocumentUploadRequested"
+      ]
+    },
+    "aggregate_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 151,
+      "sample_values": [
+        "e3459aef-c89f-589c-8c4c-aeecf28ad14b",
+        "e3459aef-c89f-589c-8c4c-aeecf28ad14b",
+        "8ee90ef0-d821-565d-b4d3-6fa6d1995755",
+        "5f5f0728-5c48-5e6a-b090-6f212ca051d1",
+        "5f5f0728-5c48-5e6a-b090-6f212ca051d1"
+      ]
+    },
+    "aggregate_type": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        "LoanApplication",
+        "LoanApplication",
+        "LoanApplication",
+        "LoanApplication",
+        "LoanApplication"
+      ]
+    },
+    "sequence_number": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 13,
+      "sample_values": [
+        1,
+        2,
+        1,
+        1,
+        2
+      ],
+      "stats": {
+        "min": 1.0,
+        "max": 13.0,
+        "mean": 5.335559265442404,
+        "p25": 3.0,
+        "p50": 5.0,
+        "p75": 8.0,
+        "p95": 11.0,
+        "p99": 13.0,
+        "stddev": 3.243798166621124
+      }
+    },
+    "schema_version": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 2,
+      "sample_values": [
+        "1.0",
+        "1.0",
+        "1.0",
+        "1.0",
+        "1.0"
+      ]
+    },
+    "occurred_at": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 820,
+      "sample_values": [
+        "2026-02-26T16:40:30Z",
+        "2026-02-26T16:40:30Z",
+        "2026-02-26T16:40:50Z",
+        "2026-03-04T16:41:30Z",
+        "2026-03-04T16:41:30Z"
+      ]
+    },
+    "recorded_at": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 820,
+      "sample_values": [
+        "2026-02-26T16:40:30Z",
+        "2026-02-26T16:40:30Z",
+        "2026-02-26T16:40:50Z",
+        "2026-03-04T16:41:30Z",
+        "2026-03-04T16:41:30Z"
+      ]
+    },
+    "metadata.correlation_id": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 151,
+      "sample_values": [
+        "4095f983-0619-5df1-aa5c-302842ad034c",
+        "4095f983-0619-5df1-aa5c-302842ad034c",
+        "cd340e46-dc9b-5e3e-8b2d-57bdeef0a3ac",
+        "122f449f-6188-5539-b418-774612f74bd8",
+        "122f449f-6188-5539-b418-774612f74bd8"
+      ]
+    },
+    "metadata.causation_id": {
+      "dtype": "string",
+      "null_fraction": 0.126,
+      "cardinality_estimate": 1047,
+      "sample_values": [
+        "6784050c-0c1f-5994-bd00-a4ae7ca2cc29",
+        "10735aa1-ab30-55b1-8ea7-b7be22794954",
+        "8689f09e-b109-5bec-8b53-42aae37d11f4",
+        "c3d3a443-0469-55ee-9d93-bc52cf94471e",
+        "f9e52b9f-1be0-5605-96c2-ece490ab71a2"
+      ]
+    },
+    "metadata.source_service": {
+      "dtype": "string",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 1,
+      "sample_values": [
+        "week5-ledger-2",
+        "week5-ledger-2",
+        "week5-ledger-2",
+        "week5-ledger-2",
+        "week5-ledger-2"
+      ]
+    },
+    "payload_keys": {
+      "dtype": "array",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 34,
+      "sample_values": [
+        [
+          "applicant_id",
+          "application_id",
+          "application_reference",
+          "contact_email",
+          "contact_name",
+          "document_id",
+          "fact_count",
+          "loan_purpose",
+          "loan_term_months",
+          "requested_amount_usd",
+          "status",
+          "submission_channel",
+          "submitted_at"
+        ],
+        [
+          "application_id",
+          "deadline",
+          "document_id",
+          "fact_count",
+          "requested_by",
+          "required_document_types",
+          "status"
+        ],
+        [
+          "application_id",
+          "created_at",
+          "document_id",
+          "fact_count",
+          "package_id",
+          "required_documents",
+          "status"
+        ],
+        [
+          "applicant_id",
+          "application_id",
+          "application_reference",
+          "contact_email",
+          "contact_name",
+          "document_id",
+          "fact_count",
+          "loan_purpose",
+          "loan_term_months",
+          "requested_amount_usd",
+          "status",
+          "submission_channel",
+          "submitted_at"
+        ],
+        [
+          "application_id",
+          "deadline",
+          "document_id",
+          "fact_count",
+          "requested_by",
+          "required_document_types",
+          "status"
+        ]
+      ]
+    },
+    "payload_size": {
+      "dtype": "integer",
+      "null_fraction": 0.0,
+      "cardinality_estimate": 10,
+      "sample_values": [
+        13,
+        7,
+        7,
+        13,
+        7
+      ],
+      "stats": {
+        "min": 6.0,
+        "max": 15.0,
+        "mean": 11.141903171953256,
+        "p25": 8.0,
+        "p50": 11.0,
+        "p75": 13.0,
+        "p95": 15.0,
+        "p99": 15.0,
+        "stddev": 2.9007354324543333
+      }
+    }
+  },
+  "lineage": {
+    "upstream": [
+      {
+        "id": "service::week3-document-refinery",
+        "relationship": "PRODUCES",
+        "confidence": 0.89
+      }
+    ],
+    "downstream": [],
+    "downstream_nodes_from_lineage": [],
+    "registry_subscribers": [
+      {
+        "subscriber_id": "week6-enforcer",
+        "validation_mode": "ENFORCE",
+        "contact": "week6-team@org.com",
+        "breaking_fields": [
+          {
+            "field": "recorded_at",
+            "reason": "timestamp parsing gates event replay ordering and enforcement windows"
+          },
+          {
+            "field": "schema_version",
+            "reason": "incompatible schema versions change how event payloads are interpreted"
+          },
+          {
+            "field": "payload_keys",
+            "reason": "missing canonical payload keys prevent downstream health and policy checks"
+          }
+        ]
+      }
+    ],
+    "note": "Blast radius uses registry_subscribers as the primary source. Lineage nodes are enrichment only."
+  }
+}
