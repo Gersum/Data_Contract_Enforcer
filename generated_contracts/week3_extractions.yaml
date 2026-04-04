@@ -1,7 +1,7 @@
-contract_id: week3-extractions
+contract_id: week3-document-refinery-extractions
 dataset_type: week3
 source_path: outputs/week3/extractions.jsonl
-generated_at: '2026-04-02T00:26:31Z'
+generated_at: '2026-04-04T13:49:19Z'
 version: 1.0.0
 clauses:
 - check_id: week3.doc_id.required
@@ -74,6 +74,10 @@ clauses:
 lineage:
   upstream: []
   downstream: []
+  downstream_nodes_from_lineage: []
+  registry_subscribers: []
+  note: Blast radius uses registry_subscribers as the primary source. Lineage nodes
+    are enrichment only.
 profile_hash: 81b2fc4889d1700be3f1256745e7a72b66c00a862b264854ad70542f072a3fa0
 column_profiles:
   doc_id:
@@ -379,3 +383,6 @@ summary:
     ORG: 36
     OTHER: 57
     DATE: 9
+registry:
+  path: null
+  contract_id: week3-document-refinery-extractions

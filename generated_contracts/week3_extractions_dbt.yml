@@ -1,6 +1,6 @@
 version: 2
 models:
-- name: week3_extractions
+- name: week3_document_refinery_extractions
   columns:
   - name: doc_id
     tests:

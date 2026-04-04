@@ -5,6 +5,21 @@ models:
   - name: doc_id
     tests:
     - not_null
+    - dbt_expectations.expect_column_values_to_match_regex:
+        regex: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+  - name: extracted_at
+    tests:
+    - dbt_expectations.expect_column_values_to_match_regex:
+        regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
+  - name: processing_time_ms
+    tests:
+    - dbt_expectations.expect_column_values_to_be_between:
+        min_value: 1
+  - name: extracted_facts.confidence
+    tests:
+    - dbt_expectations.expect_column_values_to_be_between:
+        min_value: 0.0
+        max_value: 1.0
   - name: entities.type
     tests:
     - accepted_values:
@@ -15,8 +30,29 @@ models:
         - DATE
         - AMOUNT
         - OTHER
+  - name: extracted_facts.entity_refs_valid
+    tests:
+    - accepted_values:
+        values:
+        - true
+  - name: fact_count
+    tests:
+    - dbt_expectations.expect_column_values_to_be_between:
+        min_value: 1
+  - name: entity_count
+    tests:
+    - dbt_expectations.expect_column_values_to_be_between:
+        min_value: 1
+  - name: token_count.input
+    tests:
+    - dbt_expectations.expect_column_values_to_be_between:
+        min_value: 1
+  - name: token_count.output
+    tests:
+    - dbt_expectations.expect_column_values_to_be_between:
+        min_value: 1
   - name: extraction_model
     tests:
     - accepted_values:
         values:
-        - claude-3-5-sonnet-20241022
+        - DOCREFINERY_CORPUS
