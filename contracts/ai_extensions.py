@@ -199,7 +199,8 @@ def check_output_violation_rate(
     status = "WARN" if (trend == "rising" or rate > warn_threshold) else "PASS"
     if rate > warn_threshold * 5:
         status = "FAIL"
-    return {
+        
+    result = {
         "name": "output_violation_rate",
         "status": status,
         "total_outputs": total,
@@ -209,6 +210,25 @@ def check_output_violation_rate(
         "baseline_rate": baseline_rate,
         "warn_threshold": warn_threshold,
     }
+    
+    if status in {"WARN", "FAIL"}:
+        violation_log_path = ROOT / "violation_log" / "violations.jsonl"
+        violation_log_path.parent.mkdir(parents=True, exist_ok=True)
+        # Create a violation entry
+        entry = {
+            "check_id": "ai.output_violation_rate",
+            "field": expected_enum_field,
+            "status": status,
+            "severity": "WARN" if status == "WARN" else "HIGH",
+            "message": f"LLM output violation rate ({rate}) exceeded threshold ({warn_threshold}). Trend: {trend}",
+            "actual_value": rate,
+            "expected": f"<= {warn_threshold}",
+            "generated_at": utc_now()
+        }
+        with open(violation_log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry) + "\n")
+            
+    return result
 
 
 def main() -> None:

@@ -15,7 +15,7 @@ subscriptions:
     contact: week4-team@org.com
 
   - contract_id: week4-brownfield-cartographer-lineage
-    subscriber_id: week6-enforcer
+    subscriber_id: week7-evaluator
     fields_consumed:
       - nodes
       - edges
@@ -27,10 +27,10 @@ subscriptions:
         reason: producer and consumer node identity resolution fails if node ids or metadata disappear
     validation_mode: AUDIT
     registered_at: '2026-04-02T09:00:00Z'
-    contact: week6-team@org.com
+    contact: week7-team@org.com
 
   - contract_id: week5-event-records
-    subscriber_id: week6-enforcer
+    subscriber_id: week7-evaluator
     fields_consumed:
       - event_type
       - aggregate_id
@@ -45,10 +45,10 @@ subscriptions:
         reason: missing canonical payload keys prevent downstream health and policy checks
     validation_mode: ENFORCE
     registered_at: '2026-04-02T09:00:00Z'
-    contact: week6-team@org.com
+    contact: week7-team@org.com
 
   - contract_id: langsmith-agent-traces
-    subscriber_id: week6-enforcer
+    subscriber_id: week7-evaluator
     fields_consumed:
       - run_id
       - outputs

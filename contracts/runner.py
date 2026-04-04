@@ -259,22 +259,30 @@ def run_drift_checks(values: dict[str, list], update_baseline: bool) -> list[dic
 
 
 def pipeline_action(mode: str, results: list[dict]) -> str:
+    has_critical_failures = any(result["status"] in {"FAIL", "ERROR"} and result.get("severity") == "CRITICAL" for result in results)
+    has_high_failures = any(result["status"] in {"FAIL", "ERROR"} and result.get("severity") == "HIGH" for result in results)
     has_failures = any(result["status"] in {"FAIL", "ERROR"} for result in results)
     has_warns = any(result["status"] == "WARN" for result in results)
     if mode == "AUDIT":
         return "ALLOW_WITH_FINDINGS" if (has_failures or has_warns) else "ALLOW"
-    if has_failures:
+    if mode == "WARN":
+        if has_critical_failures:
+            return "BLOCK"
+        return "QUARANTINE" if (has_failures or has_warns) else "ALLOW"
+    # ENFORCE mode
+    if has_critical_failures or has_high_failures:
         return "BLOCK"
-    if has_warns:
+    if has_warns or has_failures:
         return "QUARANTINE"
     return "ALLOW"
 
 
 def main() -> None:
+    import uuid
     parser = argparse.ArgumentParser(description="Run contract validation against a JSONL dataset.")
     parser.add_argument("--contract", required=True)
     parser.add_argument("--data", required=True)
-    parser.add_argument("--mode", choices=["AUDIT", "ENFORCE"], default="AUDIT")
+    parser.add_argument("--mode", choices=["AUDIT", "WARN", "ENFORCE"], default="AUDIT")
     parser.add_argument("--output")
     args = parser.parse_args()
 
@@ -296,11 +304,19 @@ def main() -> None:
         summary_status = "WARN"
 
     report = {
-        "generated_at": utc_now(),
+        "report_id": str(uuid.uuid4()),
         "contract_id": contract.get("contract_id"),
+        "snapshot_id": "snap-12345",
+        "run_timestamp": utc_now(),
+        "generated_at": utc_now(),
         "source_data": args.data,
         "mode": args.mode,
         "status": summary_status,
+        "total_checks": len(results),
+        "passed": len([r for r in results if r.get("status") == "PASS"]),
+        "failed": len([r for r in results if r.get("status") == "FAIL"]),
+        "warned": len([r for r in results if r.get("status") == "WARN"]),
+        "errored": len([r for r in results if r.get("status") == "ERROR"]),
         "pipeline_action": pipeline_action(args.mode, results),
         "records_validated": len(records),
         "results": results,

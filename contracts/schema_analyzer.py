@@ -40,12 +40,13 @@ def compare_profiles(previous: dict, current: dict) -> list[dict]:
         before = previous_cols[field]
         after = current_cols[field]
         if before["dtype"] != after["dtype"]:
+            is_narrow = (before["dtype"] == "float" and after["dtype"] == "int")
             changes.append(
                 {
                     "field": field,
                     "change_type": "TYPE_CHANGE",
-                    "compatibility": "BREAKING",
-                    "impact": f"Type changed from {before['dtype']} to {after['dtype']}.",
+                    "compatibility": "CRITICAL" if is_narrow else "BREAKING",
+                    "impact": f"Type changed from {before['dtype']} to {after['dtype']}.{' Narrowing conversion detected.' if is_narrow else ''}",
                 }
             )
         if before.get("stats") and after.get("stats"):
@@ -68,6 +69,7 @@ def main() -> None:
     parser.add_argument("--contract-id")
     parser.add_argument("--previous")
     parser.add_argument("--current")
+    parser.add_argument("--since")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
@@ -80,8 +82,19 @@ def main() -> None:
         snapshots = load_snapshots(args.contract_id)
         if len(snapshots) < 2:
             raise SystemExit("At least two snapshots are required.")
-        previous = snapshots[-2]
-        current = snapshots[-1]
+        
+        if args.since:
+            since_date = datetime.fromisoformat(args.since.replace('Z', '+00:00')).astimezone(timezone.utc)
+            valid_snapshots = [s for s in snapshots if datetime.fromisoformat(s["generated_at"].replace('Z', '+00:00')).astimezone(timezone.utc) >= since_date]
+            if len(valid_snapshots) >= 2:
+                previous = valid_snapshots[0]
+                current = valid_snapshots[-1]
+            else:
+                previous = snapshots[-2]
+                current = snapshots[-1]
+        else:
+            previous = snapshots[-2]
+            current = snapshots[-1]
         contract_id = args.contract_id
     else:
         raise SystemExit("Provide --contract-id or both --previous and --current.")

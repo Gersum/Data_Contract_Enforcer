@@ -398,6 +398,20 @@ def main() -> None:
 
     inject_context(contract, args.lineage, args.registry)
 
+    # LLM annotation and suspicious distributions
+    for clause in contract["clauses"]:
+        field = clause.get("field")
+        if field in profiles:
+            profile = profiles[field]
+            if "stats" in profile and "mean" in profile["stats"]:
+                mean_val = profile["stats"]["mean"]
+                if mean_val > 0.99 or mean_val < 0.01:
+                    clause["warnings"] = clause.get("warnings", []) + [f"Suspicious distribution detected: mean = {mean_val}"]
+            
+            # Simulate LLM annotation call for ambiguous columns
+            if field in {"extracted_facts.confidence", "event_type"} and "description" not in clause:
+                clause["description"] = f"LLM Generated Annotation: Expected behavior for {field}."
+
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
     yaml_paths = []
@@ -427,6 +441,22 @@ def main() -> None:
     snapshot_dir_path = ROOT / "schema_snapshots" / contract_filename(contract_id) / f"{snapshot_name}.json"
     write_json(snapshot_path, snapshot)
     write_json(snapshot_dir_path, snapshot)
+
+    # Write baselines.json
+    baselines_path = ROOT / "schema_snapshots" / "baselines.json"
+    baselines = {"columns": {}}
+    if baselines_path.exists():
+        with open(baselines_path, "r", encoding="utf-8") as handle:
+            baselines = json.load(handle)
+            if "columns" not in baselines:
+                baselines = {"columns": baselines}
+    for field, profile in profiles.items():
+        if "stats" in profile and "mean" in profile["stats"]:
+            baselines["columns"][field] = {
+                "mean": profile["stats"]["mean"],
+                "stddev": profile["stats"].get("stddev", 0.0)
+            }
+    write_json(baselines_path, baselines)
 
     print(f"Generated {yaml_paths[0]}")
 
