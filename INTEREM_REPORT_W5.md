@@ -16,6 +16,7 @@ The platform integrates six key data-producing surfaces mapped to their correspo
 - **Week 4**: [The_Brownfield_Cartographer](https://github.com/Gersum/The_Brownfield_Cartographer.git)
 - **Week 5 and Week 6**: [The_Ledger_2](https://github.com/Gersum/The_Ledger_2.git)
 
+![alt text](image.png)
 ```mermaid
 graph LR
   W1["Week 1 TenX_Day2_Research\nschema: intent_record"] -->|"intent_record.code_refs[]"| W2["Week 2 TenX_W2_Intereme\nschema: verdict_record"]
