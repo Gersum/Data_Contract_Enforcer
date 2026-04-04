@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-04T18:28:46Z",
+  "generated_at": "2026-04-04T21:11:11Z",
   "period": "2026-03-28 to 2026-04-04",
   "data_health_score": 47,
   "health_score_calculation": {
@@ -13,9 +13,9 @@
   },
   "health_narrative": "Score of 47/100. 2 critical issues require immediate attention.",
   "top_violations": [
-    "The extracted_facts.confidence field failed a range check. Expected {'minimum': 0.0, 'maximum': 1.0} but found {'minimum': 0.76, 'maximum': 76.0}. Downstream subscribers affected: week4-cartographer. Records failing: 5.",
-    "The extracted_facts.entity_refs_valid field failed a boolean_truth check. Expected contract expectation but found observed value. Downstream subscribers affected: week4-cartographer. Records failing: 1.",
-    "The occurred_at field failed a datetime check. Expected contract expectation but found observed value. Downstream subscribers affected: week6-enforcer. Records failing: 1198."
+    "The extracted_facts.confidence field failed a range check. Expected {'minimum': 0.0, 'maximum': 1.0} but found {'minimum': 0.76, 'maximum': 76.0}. Downstream subscribers affected: week4-cartographer, week5-event-platform. Records failing: 5.",
+    "The extracted_facts.entity_refs_valid field failed a boolean_truth check. Expected contract expectation but found observed value. Downstream subscribers affected: week4-cartographer, week5-event-platform. Records failing: 1.",
+    "The occurred_at field failed a datetime check. Expected contract expectation but found observed value. Downstream subscribers affected: week7-evaluator. Records failing: 1198."
   ],
   "violations_by_severity": {
     "CRITICAL": 2,
@@ -69,8 +69,8 @@
     }
   ],
   "recommended_actions": [
-    "Update src/extractor.py so extracted_facts.confidence continues to satisfy clause `week3.extracted_facts.confidence.range` with values in the 0.0-1.0 range, and keep contracts/runner.py in CI to block future scale drift.",
-    "Update src/extractor.py so extracted_facts.entity_refs only reference emitted entity_ids and satisfy clause `week3.extracted_facts.entity_refs.valid` before Week 3 records are published.",
-    "Normalize occurred_at, recorded_at, and schema_version in outputs/migrate/create_week5_direct_import.py and src/events.py so clauses `week5.occurred_at.datetime`, `week5.recorded_at.datetime`, and `week5.schema_version.enum` pass before ingestion."
+    "Update `src/extractor.py` so `extracted_facts.confidence` satisfies clause `week3.extracted_facts.confidence.range` and keep `extracted_facts.confidence` on the 0.0-1.0 scale. Keep `contracts/runner.py` enforcing this contract before downstream ingestion.",
+    "Update `src/extractor.py` so `extracted_facts.entity_refs_valid` satisfies clause `week3.extracted_facts.entity_refs.valid` and ensure every `extracted_facts.entity_refs_valid` value resolves to an emitted entity_id. Keep `contracts/runner.py` enforcing this contract before downstream ingestion.",
+    "Update `outputs/week5/events_direct_import.jsonl` so `occurred_at` satisfies clause `week5.occurred_at.datetime` and emit `occurred_at` as valid ISO-8601 timestamps. Keep `contracts/runner.py` enforcing this contract before downstream ingestion."
   ]
 }

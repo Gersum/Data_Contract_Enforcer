@@ -29,6 +29,18 @@ def load_violations(path: Path) -> list[dict]:
     return rows
 
 
+def index_violations(rows: list[dict]) -> dict[tuple[str, str, str], dict]:
+    indexed = {}
+    for row in rows:
+        key = (
+            canonical_contract_id(row.get("contract_id", "")),
+            row.get("check_id", ""),
+            row.get("field", ""),
+        )
+        indexed[key] = row
+    return indexed
+
+
 def latest_timestamp(report: dict) -> str:
     return report.get("generated_at", "")
 
@@ -94,33 +106,51 @@ def plain_language_violation(result: dict, registry_subscriptions: list[dict]) -
     )
 
 
-def recommendation_for_result(result: dict) -> str:
-    check_id = result.get("check_id", "")
+def candidate_file_path(violation: dict | None) -> str | None:
+    if not violation:
+        return None
+    candidates = []
+    candidates.extend(violation.get("ranked_candidates", []))
+    blame_chain = violation.get("blame_chain", {})
+    candidates.extend(blame_chain.get("candidates", []))
+    for candidate in candidates:
+        node_id = candidate.get("node_id", "")
+        if node_id.startswith("file::"):
+            return node_id.replace("file::", "", 1)
+        if node_id.startswith("src/"):
+            return node_id
+    git_blame = violation.get("git_blame", {})
+    file_path = git_blame.get("file_path")
+    return file_path
+
+
+def recommended_fix_hint(check_id: str, field: str) -> str:
     if "confidence" in check_id:
-        return (
-            "Update src/extractor.py so extracted_facts.confidence continues to satisfy clause "
-            "`week3.extracted_facts.confidence.range` with values in the 0.0-1.0 range, and keep "
-            "contracts/runner.py in CI to block future scale drift."
-        )
+        return f"keep `{field}` on the 0.0-1.0 scale"
     if "entity_refs" in check_id:
-        return (
-            "Update src/extractor.py so extracted_facts.entity_refs only reference emitted entity_ids and satisfy "
-            "clause `week3.extracted_facts.entity_refs.valid` before Week 3 records are published."
-        )
+        return f"ensure every `{field}` value resolves to an emitted entity_id"
     if "entities.type" in check_id:
-        return (
-            "Update src/extractor.py so entities.type only emits accepted values for clause "
-            "`week3.entities.type.enum` before Week 3 records are published."
-        )
-    if check_id.startswith("week5."):
-        return (
-            "Normalize occurred_at, recorded_at, and schema_version in outputs/migrate/create_week5_direct_import.py "
-            "and src/events.py so clauses `week5.occurred_at.datetime`, `week5.recorded_at.datetime`, and "
-            "`week5.schema_version.enum` pass before ingestion."
-        )
+        return f"restrict `{field}` to the accepted enum values"
+    if "datetime" in check_id:
+        return f"emit `{field}` as valid ISO-8601 timestamps"
+    if "schema_version" in check_id:
+        return f"emit `{field}` using the accepted schema-version enum"
+    if "payload" in check_id:
+        return f"include the required payload keys for `{field}`"
+    return f"restore `{field}` to the contract-defined behavior"
+
+
+def recommendation_for_result(result: dict, violation_lookup: dict[tuple[str, str, str], dict]) -> str:
+    contract_id = canonical_contract_id(result.get("contract_id", ""))
+    check_id = result.get("check_id", "")
+    field = result.get("field") or "unknown_field"
+    lookup_key = (contract_id, check_id, field)
+    violation = violation_lookup.get(lookup_key)
+    producer_path = candidate_file_path(violation) or result.get("source_data") or "upstream producer"
+    fix_hint = recommended_fix_hint(check_id, field)
     return (
-        "Keep contracts/runner.py and contracts/schema_analyzer.py in CI so clause-level structural changes are "
-        "caught before downstream consumers ingest them."
+        f"Update `{producer_path}` so `{field}` satisfies clause `{check_id}` and {fix_hint}. "
+        f"Keep `contracts/runner.py` enforcing this contract before downstream ingestion."
     )
 
 
@@ -136,6 +166,7 @@ def main() -> None:
     violations = load_violations(ROOT / args.violations_dir / "violations.jsonl")
     registry_path = ROOT / args.registry if not Path(args.registry).is_absolute() else Path(args.registry)
     registry_subscriptions = load_registry_subscriptions(registry_path) if registry_path.exists() else []
+    violation_lookup = index_violations(violations)
     all_failures = unique_findings(reports)
     all_results = latest_results(reports)
     sorted_failures = sorted(
@@ -149,7 +180,7 @@ def main() -> None:
     health_score = health_summary["final_score"]
     recommendations = []
     for failure in sorted_failures[:3]:
-        recommendation = recommendation_for_result(failure)
+        recommendation = recommendation_for_result(failure, violation_lookup)
         if recommendation not in recommendations:
             recommendations.append(recommendation)
     if len(recommendations) < 3:
