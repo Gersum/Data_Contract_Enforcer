@@ -12,12 +12,17 @@ if str(ROOT) not in sys.path:
 
 from contracts.common import (
     build_column_profile,
+    CANONICAL_CONTRACT_IDS,
+    canonical_contract_id,
     flatten_week3,
     flatten_week5,
     histogram,
+    load_registry_subscriptions,
     read_jsonl,
     sha256_text,
+    subscribers_for_contract,
     summarize_enum,
+    utc_now,
     write_json,
 )
 
@@ -44,11 +49,7 @@ def infer_dataset_type(source_path: str) -> str:
 
 
 def default_contract_id(dataset_type: str) -> str:
-    mapping = {
-        "week3": "week3-extractions",
-        "week5": "week5-events",
-    }
-    return mapping[dataset_type]
+    return CANONICAL_CONTRACT_IDS[dataset_type]
 
 
 def base_contract(contract_id: str, source_path: str, dataset_type: str) -> dict:
@@ -56,7 +57,7 @@ def base_contract(contract_id: str, source_path: str, dataset_type: str) -> dict
         "contract_id": contract_id,
         "dataset_type": dataset_type,
         "source_path": source_path,
-        "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "generated_at": utc_now(),
         "version": "1.0.0",
         "clauses": [],
         "lineage": {"upstream": [], "downstream": []},
@@ -167,26 +168,64 @@ def add_week5_clauses(contract: dict, records: list[dict], profiles: dict[str, d
     }
 
 
-def inject_lineage(contract: dict, lineage_path: str | None) -> None:
-    if not lineage_path or not Path(lineage_path).exists():
-        return
-    snapshots = read_jsonl(lineage_path)
-    if not snapshots:
-        return
-    latest = snapshots[-1]
-    downstream = []
-    for edge in latest.get("edges", []):
-        source = edge.get("source", "")
-        if "week3" in source or "week5" in source or "contract-enforcer" in edge.get("target", ""):
-            downstream.append(
-                {
-                    "id": edge.get("target"),
-                    "relationship": edge.get("relationship"),
-                    "confidence": edge.get("confidence"),
-                }
-            )
-    contract["lineage"]["downstream"] = downstream
-    contract["lineage"]["upstream"] = [{"id": node.get("node_id")} for node in latest.get("nodes", [])[:3]]
+def inject_context(contract: dict, lineage_path: str | None, registry_path: str | None) -> None:
+    producer_nodes = {
+        "week3": "service::week3-document-refinery",
+        "week5": "service::week5-event-platform",
+    }
+    producer_node_id = producer_nodes[contract["dataset_type"]]
+    lineage_context = {
+        "upstream": [],
+        "downstream": [],
+        "downstream_nodes_from_lineage": [],
+        "registry_subscribers": [],
+        "note": "Blast radius uses registry_subscribers as the primary source. Lineage nodes are enrichment only.",
+    }
+
+    if lineage_path and Path(lineage_path).exists():
+        snapshots = read_jsonl(lineage_path)
+        if snapshots:
+            latest = snapshots[-1]
+            upstream = []
+            downstream = []
+            for edge in latest.get("edges", []):
+                if edge.get("target") == producer_node_id:
+                    upstream.append(
+                        {
+                            "id": edge.get("source"),
+                            "relationship": edge.get("relationship"),
+                            "confidence": edge.get("confidence"),
+                        }
+                    )
+                if edge.get("source") == producer_node_id and edge.get("relationship") in {"PRODUCES", "WRITES", "CONSUMES"}:
+                    downstream.append(
+                        {
+                            "node_id": edge.get("target"),
+                            "relationship": edge.get("relationship"),
+                            "confidence": edge.get("confidence"),
+                        }
+                    )
+            lineage_context["upstream"] = upstream
+            lineage_context["downstream"] = downstream
+            lineage_context["downstream_nodes_from_lineage"] = downstream
+
+    if registry_path and Path(registry_path).exists():
+        registry_subscriptions = subscribers_for_contract(load_registry_subscriptions(registry_path), contract["contract_id"])
+        lineage_context["registry_subscribers"] = [
+            {
+                "subscriber_id": subscription.get("subscriber_id"),
+                "validation_mode": subscription.get("validation_mode", "AUDIT"),
+                "contact": subscription.get("contact"),
+                "breaking_fields": subscription.get("breaking_fields", []),
+            }
+            for subscription in registry_subscriptions
+        ]
+
+    contract["lineage"] = lineage_context
+    contract["registry"] = {
+        "path": registry_path,
+        "contract_id": canonical_contract_id(contract["contract_id"]),
+    }
 
 
 def contract_filename(contract_id: str) -> str:
@@ -337,6 +376,7 @@ def main() -> None:
     parser.add_argument("--source", required=True)
     parser.add_argument("--contract-id")
     parser.add_argument("--lineage")
+    parser.add_argument("--registry")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
@@ -356,7 +396,7 @@ def main() -> None:
     elif dataset_type == "week5":
         add_week5_clauses(contract, records, profiles)
 
-    inject_lineage(contract, args.lineage)
+    inject_context(contract, args.lineage, args.registry)
 
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -380,9 +420,13 @@ def main() -> None:
         "generated_at": contract["generated_at"],
         "profile_hash": contract["profile_hash"],
         "column_profiles": contract["column_profiles"],
+        "lineage": contract.get("lineage", {}),
     }
-    snapshot_path = ROOT / "schema_snapshots" / f"{contract_filename(contract_id)}_{contract['generated_at'].replace(':', '').replace('-', '')}.json"
+    snapshot_name = contract["generated_at"].replace(":", "").replace("-", "")
+    snapshot_path = ROOT / "schema_snapshots" / f"{contract_filename(contract_id)}_{snapshot_name}.json"
+    snapshot_dir_path = ROOT / "schema_snapshots" / contract_filename(contract_id) / f"{snapshot_name}.json"
     write_json(snapshot_path, snapshot)
+    write_json(snapshot_dir_path, snapshot)
 
     print(f"Generated {yaml_paths[0]}")
 

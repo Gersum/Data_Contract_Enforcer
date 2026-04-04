@@ -13,8 +13,16 @@ from contracts.common import write_json
 
 def load_snapshots(contract_id: str) -> list[dict]:
     prefix = contract_id.replace("-", "_")
-    paths = sorted((ROOT / "schema_snapshots").glob(f"{prefix}_*.json"))
+    nested_paths = sorted((ROOT / "schema_snapshots" / prefix).glob("*.json"))
+    flat_paths = sorted((ROOT / "schema_snapshots").glob(f"{prefix}_*.json"))
+    paths = nested_paths or flat_paths
     return [json.load(open(path, "r", encoding="utf-8")) for path in paths]
+
+
+def load_snapshot(path: str) -> dict:
+    snapshot_path = ROOT / path if not Path(path).is_absolute() else Path(path)
+    with open(snapshot_path, "r", encoding="utf-8") as handle:
+        return json.load(handle)
 
 
 def compare_profiles(previous: dict, current: dict) -> list[dict]:
@@ -43,7 +51,7 @@ def compare_profiles(previous: dict, current: dict) -> list[dict]:
         if before.get("stats") and after.get("stats"):
             before_max = before["stats"]["max"]
             after_max = after["stats"]["max"]
-            if field.endswith("confidence") and before_max <= 1.0 and after_max > 1.0:
+            if field.endswith("confidence") and ((before_max <= 1.0 < after_max) or (after_max <= 1.0 < before_max)):
                 changes.append(
                     {
                         "field": field,
@@ -57,21 +65,32 @@ def compare_profiles(previous: dict, current: dict) -> list[dict]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Analyze contract snapshot evolution.")
-    parser.add_argument("--contract-id", required=True)
+    parser.add_argument("--contract-id")
+    parser.add_argument("--previous")
+    parser.add_argument("--current")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
-    snapshots = load_snapshots(args.contract_id)
-    if len(snapshots) < 2:
-        raise SystemExit("At least two snapshots are required.")
+    if args.previous and args.current:
+        previous = load_snapshot(args.previous)
+        current = load_snapshot(args.current)
+        snapshots = [previous, current]
+        contract_id = current.get("contract_id") or previous.get("contract_id") or "unknown-contract"
+    elif args.contract_id:
+        snapshots = load_snapshots(args.contract_id)
+        if len(snapshots) < 2:
+            raise SystemExit("At least two snapshots are required.")
+        previous = snapshots[-2]
+        current = snapshots[-1]
+        contract_id = args.contract_id
+    else:
+        raise SystemExit("Provide --contract-id or both --previous and --current.")
 
-    previous = snapshots[-2]
-    current = snapshots[-1]
     changes = compare_profiles(previous, current)
     compatibility = "BREAKING" if any(change["compatibility"] == "BREAKING" for change in changes) else "COMPATIBLE"
     report = {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-        "contract_id": args.contract_id,
+        "contract_id": contract_id,
         "snapshot_count": len(snapshots),
         "previous_snapshot": previous["generated_at"],
         "current_snapshot": current["generated_at"],

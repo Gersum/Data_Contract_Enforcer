@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from contracts.common import build_column_profile, flatten_week3, flatten_week5, is_iso_datetime, is_uuid, parse_iso8601, read_jsonl, write_json
+from contracts.common import build_column_profile, flatten_week3, flatten_week5, is_iso_datetime, is_uuid, parse_iso8601, read_jsonl, utc_now, write_json
 
 
 def fail_result(clause: dict, status: str, message: str, **extra: object) -> dict:
@@ -192,7 +192,7 @@ def run_clause(clause: dict, values: dict[str, list], records: list[dict], datas
     return fail_result(clause, "ERROR", f"Unsupported check type: {check_type}")
 
 
-def run_drift_checks(values: dict[str, list]) -> list[dict]:
+def run_drift_checks(values: dict[str, list], update_baseline: bool) -> list[dict]:
     baseline_path = ROOT / "schema_snapshots/baselines.json"
     if not baseline_path.exists():
         baselines = {}
@@ -216,7 +216,11 @@ def run_drift_checks(values: dict[str, list]) -> list[dict]:
                     "check_type": "statistical_drift",
                     "severity": "LOW",
                     "status": "BASELINE_SET",
-                    "message": "No baseline existed; current profile stored as baseline.",
+                    "message": (
+                        "No baseline existed; current profile stored as baseline."
+                        if update_baseline
+                        else "No baseline existed; run a clean AUDIT pass to establish one."
+                    ),
                 }
             )
             continue
@@ -241,20 +245,36 @@ def run_drift_checks(values: dict[str, list]) -> list[dict]:
             }
         )
 
-    write_json(
-        baseline_path,
-        {
-            "written_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-            "columns": current,
-        },
-    )
+    if update_baseline:
+        merged_columns = dict(baselines)
+        merged_columns.update(current)
+        write_json(
+            baseline_path,
+            {
+                "written_at": utc_now(),
+                "columns": merged_columns,
+            },
+        )
     return results
+
+
+def pipeline_action(mode: str, results: list[dict]) -> str:
+    has_failures = any(result["status"] in {"FAIL", "ERROR"} for result in results)
+    has_warns = any(result["status"] == "WARN" for result in results)
+    if mode == "AUDIT":
+        return "ALLOW_WITH_FINDINGS" if (has_failures or has_warns) else "ALLOW"
+    if has_failures:
+        return "BLOCK"
+    if has_warns:
+        return "QUARANTINE"
+    return "ALLOW"
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run contract validation against a JSONL dataset.")
     parser.add_argument("--contract", required=True)
     parser.add_argument("--data", required=True)
+    parser.add_argument("--mode", choices=["AUDIT", "ENFORCE"], default="AUDIT")
     parser.add_argument("--output")
     args = parser.parse_args()
 
@@ -264,8 +284,10 @@ def main() -> None:
     dataset_type = infer_dataset_type(contract)
     values = values_for_dataset(records, dataset_type)
 
-    results = [run_clause(clause, values, records, dataset_type) for clause in contract.get("clauses", [])]
-    results.extend(run_drift_checks(values))
+    structural_results = [run_clause(clause, values, records, dataset_type) for clause in contract.get("clauses", [])]
+    structural_failures = any(result["status"] in {"FAIL", "ERROR"} for result in structural_results)
+    drift_results = run_drift_checks(values, update_baseline=(args.mode == "AUDIT" and not structural_failures))
+    results = structural_results + drift_results
 
     summary_status = "PASS"
     if any(result["status"] in {"FAIL", "ERROR"} for result in results):
@@ -274,10 +296,13 @@ def main() -> None:
         summary_status = "WARN"
 
     report = {
-        "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "generated_at": utc_now(),
         "contract_id": contract.get("contract_id"),
         "source_data": args.data,
+        "mode": args.mode,
         "status": summary_status,
+        "pipeline_action": pipeline_action(args.mode, results),
+        "records_validated": len(records),
         "results": results,
     }
     output_path = args.output or str(ROOT / "validation_reports" / f"{Path(args.contract).stem}_report.json")

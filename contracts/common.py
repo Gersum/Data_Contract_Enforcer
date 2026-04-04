@@ -7,12 +7,36 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 
 UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
 SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+$")
 ISO_Z_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 PASCAL_CASE_RE = re.compile(r"^[A-Z][A-Za-z0-9]+$")
 SHA1_RE = re.compile(r"^[0-9a-f]{40}$")
+
+CANONICAL_CONTRACT_IDS = {
+    "week3": "week3-document-refinery-extractions",
+    "week5": "week5-event-records",
+}
+
+CONTRACT_ID_ALIASES = {
+    "week3-document-refinery-extractions": {
+        "week3-document-refinery-extractions",
+        "week3-extractions",
+        "week3_document_refinery_extractions",
+        "week3_extractions",
+    },
+    "week5-event-records": {
+        "week5-event-records",
+        "week5-events",
+        "week5-event-sourcing-events",
+        "week5_event_records",
+        "week5_events",
+        "week5_event_sourcing_events",
+    },
+}
 
 
 def ensure_parent(path: str | Path) -> None:
@@ -44,6 +68,14 @@ def write_json(path: str | Path, payload: dict[str, Any]) -> None:
         json.dump(payload, handle, indent=2, sort_keys=False)
 
 
+def read_structured_file(path: str | Path) -> Any:
+    with open(path, "r", encoding="utf-8") as handle:
+        suffix = Path(path).suffix.lower()
+        if suffix in {".yaml", ".yml"}:
+            return yaml.safe_load(handle) or {}
+        return json.load(handle)
+
+
 def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
@@ -56,6 +88,48 @@ def parse_iso8601(value: str) -> datetime:
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def canonical_contract_id(contract_id: str) -> str:
+    for canonical, aliases in CONTRACT_ID_ALIASES.items():
+        if contract_id in aliases:
+            return canonical
+    return contract_id
+
+
+def contract_id_candidates(contract_id: str) -> set[str]:
+    canonical = canonical_contract_id(contract_id)
+    return CONTRACT_ID_ALIASES.get(canonical, {contract_id, canonical})
+
+
+def load_registry_subscriptions(path: str | Path) -> list[dict[str, Any]]:
+    payload = read_structured_file(path)
+    if isinstance(payload, dict) and "subscriptions" in payload:
+        return payload.get("subscriptions", [])
+
+    subscriptions: list[dict[str, Any]] = []
+    for contract_id, contract_payload in payload.get("contracts", {}).items():
+        for subscriber in contract_payload.get("subscribers", []):
+            subscriptions.append(
+                {
+                    "contract_id": contract_id,
+                    "subscriber_id": subscriber.get("subscriber_id"),
+                    "fields_consumed": subscriber.get("fields_consumed", []),
+                    "breaking_fields": subscriber.get("breaking_fields", []),
+                    "validation_mode": subscriber.get("validation_mode", "AUDIT"),
+                    "registered_at": subscriber.get("registered_at"),
+                    "contact": subscriber.get("contact") or subscriber.get("notification_target"),
+                    "organization": subscriber.get("organization"),
+                    "contract_version": subscriber.get("contract_version"),
+                    "tier": subscriber.get("tier"),
+                }
+            )
+    return subscriptions
+
+
+def subscribers_for_contract(subscriptions: list[dict[str, Any]], contract_id: str) -> list[dict[str, Any]]:
+    candidates = contract_id_candidates(contract_id)
+    return [subscription for subscription in subscriptions if subscription.get("contract_id") in candidates]
 
 
 def is_uuid(value: Any) -> bool:
